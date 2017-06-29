@@ -964,3 +964,57 @@
 	-ms-transform: rotate(-45deg);
 	transform: rotate(-45deg);
 }
+
+/*---------------------------------------------------------
+ Color Picker
+-------------------------------------------------------- */
+
+.wp-picker-container {
+    position: relative !important;
+}
+
+.iris-picker.iris-border {
+    width: 100% !important;
+}
+
+.iris-picker.iris-border .iris-picker-inner {
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+}
+
+.iris-picker.iris-border .iris-picker-inner .iris-slider.iris-strip {
+    right: 0 !important;
+    position: absolute !important;
+}
+
+.iris-picker.iris-border .iris-picker-inner .iris-square {
+    margin-right: 0 !important;
+    width: auto !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 40px !important;
+}
+
+.iris-picker.iris-border .iris-palette-container {
+    left: 0 !important;
+    bottom: 0 !important;
+    width: auto !important;
+}
+
+.iris-picker.iris-border .iris-palette-container .iris-palette {
+    width: 31px !important;
+    height: 31px !important;
+    margin-left: 8px !important;
+}
+
+.wp-picker-input-wrap {
+    position: absolute !important;
+    left: 38px !important;
+    right: 0 !important;
+}
+
+.iris-picker.iris-border .iris-palette-container .iris-palette:first-child {
+    margin-left: 0 !important;
+}
