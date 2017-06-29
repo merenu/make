@@ -1,24 +1,21 @@
 <?php
-global $ttfmake_section_data;
-
-$section_name   = 'ttfmake-section[{{ get("parentID") }}][columns][{{ get("id") }}]';
-$combined_id = "{{ get('parentID') }}-{{ get('id') }}";
+$section_name   = 'ttfmake-section[{{ data.get("parentID") }}][columns][{{ data.get("id") }}]';
+$combined_id = "{{ data.get('parentID') }}-{{ data.get('id') }}";
 $overlay_id  = "ttfmake-overlay-" . $combined_id;
 
 ?>
 <?php
-	$column_name = $section_name . '[columns][{{ get("id") }}]';
+	$column_name = $section_name . '[columns][{{ data.get("id") }}]';
 	$iframe_id = 'ttfmake-iframe-'. $combined_id;
 	$textarea_id = 'ttfmake-content-'. $combined_id;
-	$content     = '{{ get("content") }}';
+	$content     = '{{ data.get("content") }}';
 
 	$column_buttons = array(
 		100 => array(
 			'label'              => __( 'Edit content', 'make' ),
 			'href'               => '#',
-			'class'              => 'edit-text-column-link edit-content-link ttfmake-icon-pencil {{ (get("content")) ? "item-has-content" : "" }}',
-			'title'              => __( 'Edit content', 'make' ),
-			'other-a-attributes' => 'data-textarea="' . $textarea_id . '" data-iframe="' . $iframe_id . '"',
+			'class'              => "edit-text-column-link edit-content-link ttfmake-icon-pencil {{ (data.get('content')) ? 'item-has-content' : '' }}",
+			'title'              => __( 'Edit content', 'make' )
 		),
 		600 => array(
 			'label'              => __( 'Trash column', 'make' ),
@@ -52,7 +49,7 @@ $overlay_id  = "ttfmake-overlay-" . $combined_id;
 	$column_classes = apply_filters( 'ttfmake-text-column-classes', 'ttfmake-text-column', $ttfmake_section_data );
 ?>
 
-<div class="ttfmake-text-column{{ (get('size')) ? ' ttfmake-column-width-'+get('size') : '' }}" data-id="{{ get('id') }}">
+<div class="ttfmake-text-column{{ (data.get('size')) ? ' ttfmake-column-width-'+data.get('size') : '' }}" data-id="{{ data.get('id') }}">
 	<div title="<?php esc_attr_e( 'Drag-and-drop this column into place', 'make' ); ?>" class="ttfmake-sortable-handle">
 		<div class="sortable-background column-sortable-background"></div>
 
@@ -75,14 +72,14 @@ $overlay_id  = "ttfmake-overlay-" . $combined_id;
 	<ul class="configure-item-dropdown">
 		<?php foreach ( $column_buttons as $button ) : ?>
 			<li>
-				<a href="<?php echo esc_url( $button['href'] ); ?>" class="column-buttons <?php echo esc_attr( $button['class'] ); ?>" title="<?php echo esc_attr( $button['title'] ); ?>" <?php if ( ! empty( $button['other-a-attributes'] ) ) echo $button['other-a-attributes']; ?>>
-					<?php echo esc_html( $button['label'] ); ?>
+				<a href="<?php echo esc_url( $button['href'] ); ?>" class="column-buttons <?php echo $button['class']; ?>" title="<?php echo $button['title']; ?>">
+					<?php echo $button['label']; ?>
 				</a>
 			</li>
 		<?php endforeach; ?>
 	</ul>
 
-	<?php ttfmake_get_builder_base()->add_frame( $combined_id, 'content', '', $content ); ?>
+	<?php ttfmake_get_builder_base()->add_frame( '', 'content', '', $content ); ?>
 
 	<?php
 	/**

@@ -34,7 +34,7 @@ do_action( 'make_section_text_after_columns_select', $ttfmake_section_data );
  */
 do_action( 'make_section_text_after_title', $ttfmake_section_data ); ?>
 
-<div class="ttfmake-text-columns-stage ttfmake-section-text ttfmake-text-columns-{{ get('columns-number') }}">
+<div class="ttfmake-text-columns-stage ttfmake-text-columns-{{ data.get('columns-number') }}">
 	<?php
 	/**
 	 * Execute code after all columns are displayed.
