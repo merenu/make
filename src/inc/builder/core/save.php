@@ -589,7 +589,7 @@ class TTFMAKE_Builder_Save {
 		// Get the previous section's type
 		$prev_data = $this->get_prev_section_data( $current_section, $sections );
 		$prev      = ( ! empty( $prev_data ) && isset( $prev_data['section-type'] ) ) ? $prefix . 'prev-' . $prev_data['section-type'] : $prefix . 'first';
-		
+
 		/**
 		 * Filter the section classes.
 		 *
@@ -643,12 +643,10 @@ class TTFMAKE_Builder_Save {
 	 */
 	public function get_sanitized_sections() {
 		if ( empty( $this->_sanitized_sections ) ) {
-			$data = ( isset( $_POST['ttfmake-section-json'] ) ) ? $_POST['ttfmake-section-json'] : array();
+			$data = array();
 
-			if ( !empty( $data ) ) {
-				foreach ( $data as $section_id => $section_data ) {
-					$data[$section_id] = json_decode( stripslashes ( $section_data ), true );
-				}
+			if ( isset( $_POST['ttfmake-sections-json'] ) ) {
+				$data = json_decode( wp_unslash( $_POST['ttfmake-sections-json'] ), true );
 			}
 
 			$this->_sanitized_sections = $this->prepare_data( $data );
