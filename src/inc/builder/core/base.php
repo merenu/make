@@ -66,6 +66,7 @@ class TTFMAKE_Builder_Base {
 		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 		add_action( 'admin_footer', array( $this, 'print_templates' ) );
 		add_action( 'post_submitbox_misc_actions', array( $this, 'builder_toggle' ) );
+		add_filter( 'make_get_section_data', array( $this, 'massage_legacy_format' ), 10, 2 );
 	}
 
 	/**
@@ -137,20 +138,15 @@ class TTFMAKE_Builder_Base {
 	public function display_builder( $post_local ) {
 		wp_nonce_field( 'save', 'ttfmake-builder-nonce' );
 
-		// Get the current sections
-		global $ttfmake_sections;
-		$ttfmake_sections = get_post_meta( $post_local->ID, '_ttfmake-sections', true );
-		$ttfmake_sections = ( is_array( $ttfmake_sections ) ) ? $ttfmake_sections : array();
-
 		// Load the boilerplate templates
 		get_template_part( 'inc/builder/core/templates/menu' );
-		get_template_part( 'inc/builder/core/templates/stage', 'header' );
+		get_template_part( 'inc/builder/core/templates/stage' );
+	}
 
-		$section_data        = ttfmake_get_section_data( $post_local->ID );
+	public function massage_legacy_format( $section_data, $post_id ) {
 		$registered_sections = ttfmake_get_sections();
 
-		// Print the current sections
-		foreach ( $section_data as $section ) {
+		foreach ( $section_data as $id => $section ) {
 			/**
 			 * In Make 1.4.0, the blank section was deprecated. Any existing blank sections are converted to 1 column,
 			 * text sections.
@@ -164,7 +160,7 @@ class TTFMAKE_Builder_Base {
 				$id      = ( ! empty( $section['id'] ) ) ? $section['id'] : time();
 
 				// Set the data
-				$section = array(
+				$section_data[$id] = array(
 					'id'             => $id,
 					'state'          => $state,
 					'section-type'   => 'text',
@@ -211,12 +207,9 @@ class TTFMAKE_Builder_Base {
 			}
 		}
 
-		get_template_part( 'inc/builder/core/templates/stage', 'footer' );
-
-		// Add the sort input
-		$section_order = get_post_meta( $post_local->ID, '_ttfmake-section-ids', true );
-
 		// Handle legacy section order, if present
+		$section_order = get_post_meta( $post_id, '_ttfmake-section-ids', true );
+
 		if ( ! empty( $section_order ) ) {
 			$ordered_sections = array();
 
@@ -227,25 +220,7 @@ class TTFMAKE_Builder_Base {
 			$section_data = $ordered_sections;
 		}
 
-		// Expose section defaults to JS
-		wp_localize_script( 'ttfmake-builder', 'ttfMakeSectionDefaults', ttfmake_get_section_definitions()->get_section_defaults() );
-		// Expose saved sections data to JS
-		wp_localize_script( 'ttfmake-builder', 'ttfMakeSectionData', ttfmake_get_section_json_data( $section_data ) );
-
-		// Fetch templates
-		$templates = array();
-		foreach ( ttfmake_get_sections() as $section ) {
-			$template = $this->load_section( $section, array(), true );
-
-			if ( !is_array( $template ) ) {
-				$templates[$section['id']] = $template;
-			} else {
-				$templates = array_merge( $templates, $template );
-			}
-		}
-
-		// Expose section template strings to JS
-		wp_localize_script( 'ttfmake-builder', 'ttfMakeSectionTemplates', $templates );
+		return $section_data;
 	}
 
 	/**
@@ -262,7 +237,7 @@ class TTFMAKE_Builder_Base {
 			return;
 		}
 
-		// Enqueue the CSS
+		// Styles
 		wp_enqueue_style(
 			'ttfmake-builder',
 			Make()->scripts()->get_css_directory_uri() . '/builder/core/builder.css',
@@ -283,46 +258,6 @@ class TTFMAKE_Builder_Base {
 			'backbone',
 		);
 
-		wp_register_script(
-			'ttfmake-builder/js/models/section.js',
-			Make()->scripts()->get_js_directory_uri() . '/builder/core/models/section.js',
-			array(),
-			TTFMAKE_VERSION,
-			true
-		);
-
-		wp_register_script(
-			'ttfmake-builder/js/collections/sections.js',
-			Make()->scripts()->get_js_directory_uri() . '/builder/core/collections/sections.js',
-			array(),
-			TTFMAKE_VERSION,
-			true
-		);
-
-		wp_register_script(
-			'ttfmake-builder/js/views/menu.js',
-			Make()->scripts()->get_js_directory_uri() . '/builder/core/views/menu.js',
-			array(),
-			TTFMAKE_VERSION,
-			true
-		);
-
-		wp_register_script(
-			'ttfmake-builder/js/views/section.js',
-			Make()->scripts()->get_js_directory_uri() . '/builder/core/views/section.js',
-			array(),
-			TTFMAKE_VERSION,
-			true
-		);
-
-		wp_register_script(
-			'ttfmake-builder/js/views/overlay.js',
-			Make()->scripts()->get_js_directory_uri() . '/builder/core/views/overlay.js',
-			array(),
-			TTFMAKE_VERSION,
-			true
-		);
-
 		/**
 		 * Filter the dependencies for the Make builder JS.
 		 *
@@ -330,26 +265,48 @@ class TTFMAKE_Builder_Base {
 		 *
 		 * @param array    $dependencies    The list of dependencies.
 		 */
-		$dependencies = apply_filters(
-			'make_builder_js_dependencies',
-			array_merge(
-				$dependencies,
-				array(
-					'ttfmake-builder/js/models/section.js',
-					'ttfmake-builder/js/collections/sections.js',
-					'ttfmake-builder/js/views/menu.js',
-					'ttfmake-builder/js/views/section.js',
-					'ttfmake-builder/js/views/overlay.js'
-				)
-			)
-		);
+		// $dependencies = apply_filters(
+		// 	'make_builder_js_dependencies',
+		// 	array_merge(
+		// 		$dependencies,
+		// 		array(
+		// 			'ttfmake-builder/js/models/section.js',
+		// 			'ttfmake-builder/js/collections/sections.js',
+		// 			'ttfmake-builder/js/views/menu.js',
+		// 			'ttfmake-builder/js/views/section.js',
+		// 			'ttfmake-builder/js/views/overlay.js'
+		// 		)
+		// 	)
+		// );
 
 		wp_enqueue_script(
 			'ttfmake-builder',
-			Make()->scripts()->get_js_directory_uri() . '/builder/core/app.js',
+			Make()->scripts()->get_js_directory_uri() . '/builder/core/builder.js',
 			$dependencies,
 			TTFMAKE_VERSION,
 			true
+		);
+
+		wp_enqueue_script(
+			'ttfmake-builder-overlay',
+			Make()->scripts()->get_js_directory_uri() . '/builder/core/views/overlay.js',
+			array( 'ttfmake-builder' ),
+			TTFMAKE_VERSION,
+			true
+		);
+
+		// Get the current sections
+		$section_data = ttfmake_get_section_data( get_the_ID() );
+
+		// Section settings, defaults and data
+		wp_localize_script(
+			'ttfmake-builder',
+			'ttfMakeSections',
+			array(
+				'settings' => ttfmake_get_sections_settings(),
+				'defaults' => ttfmake_get_section_definitions()->get_section_defaults(),
+				'data' => ttfmake_get_section_json_data( $section_data )
+			)
 		);
 
 		// Fetch color palette
@@ -360,7 +317,7 @@ class TTFMAKE_Builder_Base {
 		$color_values = array_unique( $color_values );
 		$color_values = array_filter( $color_values, 'strlen' );
 
-		// Add data needed for the JS
+		// General builder configuration
 		$data = array(
 			'pageID'        => get_the_ID(),
 			'postRefresh'   => true,
@@ -370,7 +327,7 @@ class TTFMAKE_Builder_Base {
 
 		wp_localize_script(
 			'ttfmake-builder',
-			'ttfmakeBuilderData',
+			'ttfmakeBuilderSettings',
 			$data
 		);
 
@@ -492,8 +449,8 @@ class TTFMAKE_Builder_Base {
 		$title = ( ! empty( $title ) ) ? $title : esc_html__( 'Set image', 'make' );
 		ob_start();
 ?>
-	<div class="ttfmake-uploader{{ get('<?php echo $field_name; ?>')<?php echo $field_name_path; ?> && ' ttfmake-has-image-set' || '' }}">
-		<div data-title="<?php echo $title; ?>" class="ttfmake-media-uploader-placeholder ttfmake-media-uploader-add" style="background-image: url({{ get('<?php echo $field_name; ?>')<?php echo $field_name_path; ?> }});"></div>
+	<div class="ttfmake-uploader{{ data.get('<?php echo $field_name; ?>')<?php echo $field_name_path; ?> && ' ttfmake-has-image-set' || '' }}">
+		<div data-title="<?php echo $title; ?>" class="ttfmake-media-uploader-placeholder ttfmake-media-uploader-add" style="background-image: url({{ data.get('<?php echo $field_name; ?>')<?php echo $field_name_path; ?> }});"></div>
 	</div>
 	<?php
 		$output = ob_get_clean();
@@ -519,7 +476,7 @@ class TTFMAKE_Builder_Base {
 		$textarea_attr_name = 'ttfmake-section[' .$id. '][' .$textarea_name. ']';
 	?>
 		<?php if ( true === $iframe ) : ?>
-		<span class="ttfmake-iframe-content-placeholder{{ (!get('<?php echo $textarea_name; ?>')) ? ' show' : '' }}">
+		<span class="ttfmake-iframe-content-placeholder{{ (!data.get('<?php echo $textarea_name; ?>')) ? ' show' : '' }}">
 			<?php esc_html_e( 'Click to edit', 'make' ); ?>
 		</span>
 		<div class="ttfmake-iframe-wrapper">
@@ -534,7 +491,7 @@ class TTFMAKE_Builder_Base {
 		</div>
 		<?php endif; ?>
 
-		<textarea id="<?php echo esc_attr( $textarea_id ); ?>" name="<?php echo esc_attr( $textarea_attr_name ); ?>" data-model-attr="<?php echo esc_attr( $textarea_name ); ?>" style="display:none;">{{ get('<?php echo esc_attr( $textarea_name ); ?>')<?php echo $textarea_name_path; ?> }}</textarea>
+		<textarea id="<?php echo esc_attr( $textarea_id ); ?>" name="<?php echo esc_attr( $textarea_attr_name ); ?>" data-model-attr="<?php echo esc_attr( $textarea_name ); ?>" style="display:none;">{{ data.get('<?php echo esc_attr( $textarea_name ); ?>')<?php echo $textarea_name_path; ?> }}</textarea>
 
 		<?php if ( true !== $ttfmake_is_js_template && true === $iframe ) : ?>
 		<script type="text/javascript">
@@ -601,19 +558,27 @@ class TTFMAKE_Builder_Base {
 			return;
 		}
 
-		// Load the overlay for TinyMCE
+		// Content overlay templates
+		set_query_var( 'ttfmake_overlay_id', 'ttfmake-tinymce-overlay' );
+		set_query_var( 'ttfmake_overlay_class', 'ttfmake-overlay ttfmake-content-overlay' );
+		set_query_var( 'ttfmake_overlay_title', __( 'Edit content', 'make' ) );
 		get_template_part( '/inc/builder/core/templates/overlay', 'tinymce' );
 
-		// Print the template for removing images
+		// Configuration overlay templates
+		set_query_var( 'ttfmake_overlay_id', '{{ data.id }}' );
+		set_query_var( 'ttfmake_overlay_class', '{{ data.className }}' );
+		set_query_var( 'ttfmake_overlay_title', '{{ data.title }}' );
+		get_template_part( '/inc/builder/core/templates/overlay', 'configuration' );
+
 		?>
-			<script type="text/html" id="tmpl-ttfmake-remove-image">
-				<div class="ttfmake-remove-current-image">
-					<h3><?php esc_html_e( 'Current image', 'make' ); ?></h3>
-					<a href="#" class="ttfmake-remove-image-from-modal">
-						<?php esc_html_e( 'Remove Current Image', 'make' ); ?>
-					</a>
-				</div>
-			</script>
+		<script type="text/html" id="tmpl-ttfmake-media-overlay-remove-image">
+			<div class="ttfmake-media-overlay-remove-image">
+				<h3><?php esc_html_e( 'Current image', 'make' ); ?></h3>
+				<a href="#" class="ttfmake-remove-image-from-modal">
+					<?php esc_html_e( 'Remove Current Image', 'make' ); ?>
+				</a>
+			</div>
+		</script>
 		<?php
 	}
 

@@ -768,21 +768,18 @@
 /*---------------------------------------------------------
  Media Modal (builder.css)
 -------------------------------------------------------- */
-.ttfmake-remove-current-image {
-	display: none;
-}
-.ttfmake-builder-uploader .ttfmake-remove-current-image {
+.ttfmake-builder-uploader .ttfmake-media-overlay-remove-image {
 	display: none;
 	float: left;
 }
-.ttfmake-builder-uploader.ttfmake-media-selected .ttfmake-remove-current-image {
+.ttfmake-builder-uploader.ttfmake-media-selected .ttfmake-media-overlay-remove-image {
 	display: block;
 }
-.ttfmake-builder-uploader .ttfmake-remove-current-image a {
+.ttfmake-builder-uploader .ttfmake-media-overlay-remove-image a {
 	color: #bc0b0b;
 	text-decoration: none; /*reset*/
 }
-.ttfmake-builder-uploader .ttfmake-remove-current-image a:hover {
+.ttfmake-builder-uploader .ttfmake-media-overlay-remove-image a:hover {
 	color: red;
 }
 /*---------------------------------------------------------
