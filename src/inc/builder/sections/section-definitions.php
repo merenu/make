@@ -117,7 +117,7 @@ class TTFMAKE_Section_Definitions {
 		 *
 		 * @param array    $defaults    The default section data
 		 */
-		return apply_filters( 'make_section_defaults', $defaults );
+		return apply_filters( 'make_sections_defaults', $defaults );
 	}
 
 	/**
