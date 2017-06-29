@@ -60,17 +60,6 @@ class TTFMAKE_Section_Definitions {
 			return;
 		}
 
-		wp_register_script(
-			'builder-views-item',
-			Make()->scripts()->get_js_directory_uri() . '/builder/sections/views/item.js',
-			array(),
-			TTFMAKE_VERSION,
-			true
-		);
-
-		// Add additional dependencies to the Builder JS
-		add_filter( 'make_builder_js_dependencies', array( $this, 'add_js_dependencies' ) );
-
 		// Add the section CSS
 		wp_enqueue_style(
 			'ttfmake-sections/css/sections.css',
@@ -79,24 +68,6 @@ class TTFMAKE_Section_Definitions {
 			TTFMAKE_VERSION,
 			'all'
 		);
-	}
-
-	/**
-	 * Append more JS to the list of JS deps.
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @param  array    $deps    The current deps.
-	 * @return array             The modified deps.
-	 */
-	public function add_js_dependencies( $deps ) {
-		if ( ! is_array( $deps ) ) {
-			$deps = array();
-		}
-
-		return array_merge( $deps, array(
-			'builder-views-item'
-		) );
 	}
 
 	/**
