@@ -143,6 +143,45 @@ class TTFMAKE_Section_Definitions {
 		 */
 		return apply_filters( 'make_section_choices', $choices, $key, $section_type );
 	}
+
+	/**
+	 * Define the sections settings.
+	 *
+	 * @since  1.8.10.
+	 *
+	 * @return array        The array of choices for the section setting.
+	 */
+	public function get_settings( $section_type = false ) {
+		/**
+		 * Filter the sections settings.
+		 *
+		 * @since 1.8.10.
+		 *
+		 * @param array    $settings        The section settings.
+		 */
+		$settings = apply_filters( 'make_sections_settings', array() );
+
+		foreach ( $settings as $_section_type => $section_settings ) {
+			/**
+			 * Filter the default section data that is received.
+			 *
+			 * @since 1.8.10.
+			 *
+			 * @param string    $section_settings        Array of current section settings.
+			 * @param string    $section_type            The type of section the data is for.
+			 * @return mixed                             Array of settings if found; false if not found.
+			 */
+			$section_settings = apply_filters( 'make_section_settings', $section_settings, $_section_type );
+			ksort( $section_settings, SORT_NUMERIC );
+			$settings[$_section_type] = array_values( $section_settings );
+		}
+
+		if ( $section_type && isset( $settings[$section_type] ) ) {
+			return $settings[$section_type];
+		}
+
+		return $settings;
+	}
 }
 endif;
 
@@ -221,6 +260,22 @@ function ttfmake_sanitize_section_choice( $value, $key, $section_type ) {
 	 * @param string    $section_type    The section type.
 	 */
 	return apply_filters( 'make_sanitize_section_choice', $value, $key, $section_type );
+}
+endif;
+
+if ( ! function_exists( 'ttfmake_get_section_settings' ) ) :
+/**
+ * Return the default value for a particular section setting.
+ *
+ * @since 1.8.10.
+ *
+ * @param  string    $key             The key for the section setting.
+ * @param  string    $section_type    The section type.
+ * @return mixed                      Default value if found; false if not found.
+ */
+function ttfmake_get_sections_settings( $section_type = false ) {
+	$settings = ttfmake_get_section_definitions()->get_settings( $section_type );
+	return $settings;
 }
 endif;
 

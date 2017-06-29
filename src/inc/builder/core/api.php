@@ -83,7 +83,7 @@ class TTFMAKE_Sections {
 	 * @param  array     $custom              Array of additional custom data to be appended to the section.
 	 * @return void
 	 */
-	public function add_section( $id, $label, $icon, $description, $save_callback, $builder_template, $display_template, $order, $path, $config = array(), $custom = array() ) {
+	public function add_section( $id, $label, $icon, $description, $save_callback, $builder_template, $display_template, $order, $path, $config = false, $custom = false ) {
 
 		$section = array(
 			'id'               => $id,
@@ -95,10 +95,8 @@ class TTFMAKE_Sections {
 			'display_template' => $display_template,
 			'order'            => $order,
 			'path'             => $path,
-			'config'           => $config,
+			'config'           => ttfmake_get_sections_settings( $id ),
 		);
-
-		$section = array_merge( $custom, $section );
 
 		/**
 		 * Allow the added sections to be filtered.
@@ -204,7 +202,7 @@ if ( ! function_exists( 'ttfmake_add_section' ) ) :
  * @param  array     $custom              Array of additional custom data to be appended to the section.
  * @return void
  */
-function ttfmake_add_section( $id, $label, $icon, $description, $save_callback, $builder_template, $display_template, $order, $path, $config = array(), $custom = array() ) {
+function ttfmake_add_section( $id, $label, $icon, $description, $save_callback, $builder_template, $display_template, $order, $path, $config = false, $custom = false ) {
 	ttfmake_get_sections_class()->add_section( $id, $label, $icon, $description, $save_callback, $builder_template, $display_template, $order, $path, $config, $custom );
 }
 endif;
