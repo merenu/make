@@ -89,7 +89,7 @@
 		onSectionCollectionChanged: function( sectionModel ) {
 			var jsonTextarea = $( '#ttfmake-sections-json' );
 			jsonTextarea.val( JSON.stringify( this.collection.toJSON() ) );
-			// console.log( jsonTextarea.val() );
+			console.log( jsonTextarea.val() );
 		},
 
 		onSectionModelsSorted: function( sectionCollection ) {
@@ -233,7 +233,7 @@
 			}
 
 			var sectionType = this.model.get( 'section-type' );
-			var sectionSettings = ttfMakeSections.settings[ sectionType ];
+			var sectionSettings = sectionData.settings[ sectionType ];
 
 			if ( sectionSettings ) {
 				window.make.overlay = new window.make.overlays.configuration( { model: this.model }, sectionSettings );
@@ -396,7 +396,7 @@
 	window.make.utils = Utils;
 
 	$( document ).ready( function() {
-		window.make.load( ttfMakeSections.data );
+		window.make.load( sectionData.data );
 	} );
 
 } ) ( jQuery, _, Backbone, ttfmakeBuilderSettings, ttfMakeSections );
