@@ -25,7 +25,7 @@
 		template: wp.template( 'ttfmake-text' ),
 
 		events: _.extend( {}, make.classes.SectionView.prototype.events, {
-			'click .ttfmake-text-columns-add-column-link': 'onAddColumnClick'
+			'click .ttfmake-text-columns-add-column-link': 'onAddColumnClick',
 		} ),
 
 		initialize: function() {
@@ -38,14 +38,19 @@
 
 			this.listenTo( this.model, 'change:columns-number', this.onColumnCountChanged );
 			this.listenTo( this.model.get( 'columns' ), 'add', this.onItemModelAdded );
+			this.listenTo( this.model.get( 'columns' ), 'remove', this.onItemModelRemoved );
+			this.listenTo( this.model.get( 'columns' ), 'reset', this.onItemModelsSorted );
 			this.listenTo( this.model.get( 'columns' ), 'add remove change reset', this.onItemCollectionChanged );
 			this.listenTo( this.itemViews, 'add', this.onItemViewAdded );
+			this.listenTo( this.itemViews, 'remove', this.onItemViewRemoved );
+			this.listenTo( this.itemViews, 'reset', this.onItemViewsSorted );
 
 			var items = this.model.get( 'items' ) || _.times( 3, _.constant( sectionData.defaults['text-item'] ) );
 			var itemCollection = this.model.get( 'columns' );
 
 			_.each( items, function( itemAttrs ) {
 				var itemModel = make.factory.model( itemAttrs );
+				itemModel.parentModel = this.model;
 				itemCollection.add( itemModel );
 			}, this );
 
@@ -66,6 +71,7 @@
 
 				_.each( items, function( itemAttrs ) {
 					var itemModel = make.factory.model( itemAttrs );
+					itemModel.parentModel = this.model;
 					itemCollection.add( itemModel );
 				}, this );
 			}
@@ -87,6 +93,17 @@
 			}
 		},
 
+		onItemModelRemoved: function( itemModel ) {
+			var itemViewModel = this.itemViews.get( itemModel.id );
+			this.itemViews.remove( itemViewModel );
+		},
+
+		onItemModelsSorted: function( itemCollection ) {
+			this.itemViews.reset( _.map( itemCollection.pluck( 'id' ), function( id ) {
+				return this.itemViews.get( id );
+			}, this ) );
+		},
+
 		onItemCollectionChanged: function() {
 			this.model.trigger( 'change' );
 		},
@@ -96,8 +113,26 @@
 			var $itemViewEl = itemViewModel.get( 'view' ).render().$el;
 
 			$( '.ttfmake-text-columns-stage', this.$el ).append( $itemViewEl );
-
 			itemViewModel.get( 'view' ).trigger( 'rendered' );
+		},
+
+		onItemViewRemoved: function( itemViewModel ) {
+			itemViewModel.get( 'view' ).$el.animate( {
+				opacity: 'toggle',
+				height: 'toggle'
+			}, builderSettings.closeSpeed, function() {
+				itemViewModel.get( 'view' ).remove();
+			} );
+		},
+
+		onItemViewsSorted: function( itemViewCollection ) {
+			var $stage = $( '.ttfmake-text-columns-stage', this.$el );
+
+			itemViewCollection.forEach( function( itemViewModel ) {
+				var $itemViewEl = itemViewModel.get( 'view' ).$el;
+				$itemViewEl.detach();
+				$stage.append( $itemViewEl );
+			}, this );
 		},
 
 		initSortables: function() {
@@ -146,6 +181,11 @@
 	var ItemView = make.classes.SectionItemView.extend( {
 		template: wp.template( 'ttfmake-text-item' ),
 
+		events: _.extend( {}, make.classes.SectionItemView.prototype.events, {
+			'click .ttfmake-text-column-remove': 'onRemoveItemClick',
+			'click .edit-content-link': 'onEditItemContentClick',
+		} ),
+
 		initialize: function() {
 			make.classes.SectionItemView.prototype.initialize.apply( this, arguments );
 		},
@@ -153,10 +193,44 @@
 		afterRender: function() {
 			make.classes.SectionItemView.prototype.afterRender.apply( this, arguments );
 
+			this.listenTo( this.model, 'change:content', this.onItemContentChanged );
+
 			var iframe = $( 'iframe', this.$el ).get( 0 );
 			make.utils.initFrame( iframe );
 			make.utils.setFrameContent( iframe, this.model.get( 'content' ) );
 		},
+
+		onEditItemContentClick: function( e ) {
+			make.classes.SectionItemView.prototype.onEditItemContentClick.apply( this, arguments );
+
+			var backgroundColor = this.model.parentModel.get( 'background-color' );
+			backgroundColor = '' !== backgroundColor ? backgroundColor : 'transparent';
+			window.make.overlay.setStyle( { backgroundColor: backgroundColor } );
+		},
+
+		onRemoveItemClick: function( e ) {
+			e.preventDefault();
+
+			if ( ! confirm( 'Are you sure you want to trash this column permanently?' ) ) {
+				return;
+			}
+
+			this.model.collection.remove( this.model );
+		},
+
+		onItemContentChanged: function() {
+			var $iframe = $( 'iframe', this.$el );
+			make.utils.setFrameContent( $iframe.get( 0 ), this.model.get( 'content' ) );
+
+			if ( '' !== this.model.get( 'content' ) ) {
+				$( '.ttfmake-iframe-content-placeholder', this.$el ).removeClass( 'show' );
+				var iframeHeight = Math.min( Math.max( $iframe.contents().innerHeight(), 300 ), 500 );
+				$iframe.innerHeight( iframeHeight );
+			} else {
+				$( '.ttfmake-iframe-content-placeholder', this.$el ).addClass( 'show' );
+				$iframe.innerHeight( 300 );
+			}
+		}
 	} );
 
 	make.factory.model = _.wrap( make.factory.model, function( func, attrs ) {
