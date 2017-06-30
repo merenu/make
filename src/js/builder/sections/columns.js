@@ -174,7 +174,10 @@
 
 		onAddColumnClick: function( e ) {
 			e.preventDefault();
-			this.model.get( 'columns' ).add( sectionData.defaults['text-item'] );
+
+			var itemModel = make.factory.model( sectionData.defaults['text-item'] );
+			itemModel.parentModel = this.model;
+			this.model.get( 'columns' ).add( itemModel );
 		},
 	} );
 
