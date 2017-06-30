@@ -36,9 +36,11 @@ class MAKE_Builder_Sections_Banner_Definition {
 
 	public function __construct() {
 		add_filter( 'make_section_choices', array( $this, 'section_choices' ), 10, 3 );
-		add_filter( 'make_section_defaults', array( $this, 'section_defaults' ) );
+		add_filter( 'make_sections_settings', array( $this, 'section_settings' ) );
+		add_filter( 'make_sections_defaults', array( $this, 'section_defaults' ) );
 		add_filter( 'make_get_section_json', array ( $this, 'get_section_json' ), 10, 1 );
-		add_filter( 'make_builder_js_dependencies', array( $this, 'add_js_dependencies' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 20 );
+		add_action( 'admin_footer', array( $this, 'print_templates' ) );
 
 		ttfmake_add_section(
 			'banner',
@@ -52,34 +54,32 @@ class MAKE_Builder_Sections_Banner_Definition {
 			),
 			'sections/banner/frontend-template',
 			300,
-			get_template_directory() . '/inc/builder/',
-			$this->get_settings(),
-			array( 'slide' => $this->get_banner_slide_settings() )
+			get_template_directory() . '/inc/builder/'
 		);
 	}
 
 	public function get_settings() {
 		return array(
-			array(
+			100 => array(
 				'type'    => 'divider',
 				'label'   => __( 'General', 'make' ),
 				'name'    => 'divider-general',
 				'class'   => 'ttfmake-configuration-divider open',
 			),
-			array(
+			200 => array(
 				'type'  => 'section_title',
 				'name'  => 'title',
 				'label' => __( 'Enter section title', 'make' ),
 				'class' => 'ttfmake-configuration-title ttfmake-section-header-title-input',
 				'default' => ttfmake_get_section_default( 'title', 'banner' ),
 			),
-			array(
+			300 => array(
 				'type'    => 'text',
 				'label'   => __( 'Section height (px)', 'make' ),
 				'name'    => 'height',
 				'default' => ttfmake_get_section_default( 'height', 'banner' ),
 			),
-			array(
+			400 => array(
 				'type'        => 'select',
 				'label'       => __( 'Responsive behavior', 'make' ),
 				'name'        => 'responsive',
@@ -87,20 +87,20 @@ class MAKE_Builder_Sections_Banner_Definition {
 				'description' => __( 'Choose how the Banner will respond to varying screen widths. Default is ideal for large amounts of written content, while Aspect is better for showing your images.', 'make' ),
 				'options'     => ttfmake_get_section_choices( 'responsive', 'banner' ),
 			),
-			array(
+			500 => array(
 				'type'  => 'divider',
 				'label' => __( 'Background', 'make' ),
 				'name'  => 'divider-background',
 				'class' => 'ttfmake-configuration-divider',
 			),
-			array(
+			600 => array(
 				'type'  => 'image',
 				'name'  => 'background-image',
 				'label' => __( 'Background image', 'make' ),
 				'class' => 'ttfmake-configuration-media',
 				'default' => ttfmake_get_section_default( 'background-image', 'banner' ),
 			),
-			array(
+			700 => array(
 				'type'  => 'select',
 				'name'  => 'background-position',
 				'label' => __( 'Position', 'make' ),
@@ -108,7 +108,7 @@ class MAKE_Builder_Sections_Banner_Definition {
 				'default' => ttfmake_get_section_default( 'background-position', 'banner' ),
 				'options' => ttfmake_get_section_choices( 'background-position', 'banner' ),
 			),
-			array(
+			800 => array(
 				'type'    => 'select',
 				'name'    => 'background-style',
 				'label'   => __( 'Display', 'make' ),
@@ -116,51 +116,51 @@ class MAKE_Builder_Sections_Banner_Definition {
 				'default' => ttfmake_get_section_default( 'background-style', 'banner' ),
 				'options' => ttfmake_get_section_choices( 'background-style', 'banner' ),
 			),
-			array(
+			900 => array(
 				'type'    => 'checkbox',
 				'label'   => __( 'Darken', 'make' ),
 				'name'    => 'darken',
 				'default' => ttfmake_get_section_default( 'darken', 'banner' ),
 			),
-			array(
+			1000 => array(
 				'type'    => 'color',
 				'label'   => __( 'Background color', 'make' ),
 				'name'    => 'background-color',
 				'class'   => 'ttfmake-gallery-background-color ttfmake-configuration-color-picker',
 				'default' => ttfmake_get_section_default( 'background-color', 'banner' ),
 			),
-			array(
+			1100 => array(
 				'type'    => 'divider',
 				'label'   => __( 'Slideshow', 'make' ),
 				'name'    => 'divider-slideshow',
 				'class'   => 'ttfmake-configuration-divider',
 			),
-			array(
+			1200 => array(
 				'type'    => 'checkbox',
 				'label'   => __( 'Navigation arrows', 'make' ),
 				'name'    => 'arrows',
 				'default' => ttfmake_get_section_default( 'arrows', 'banner' ),
 			),
-			array(
+			1300 => array(
 				'type'    => 'checkbox',
 				'label'   => __( 'Navigation dots', 'make' ),
 				'name'    => 'dots',
 				'default' => ttfmake_get_section_default( 'dots', 'banner' ),
 			),
-			array(
+			1400 => array(
 				'type'    => 'checkbox',
 				'label'   => __( 'Autoplay slideshow', 'make' ),
 				'name'    => 'autoplay',
 				'default' => ttfmake_get_section_default( 'autoplay', 'banner' ),
 			),
-			array(
+			1500 => array(
 				'type'    => 'select',
 				'label'   => __( 'Speed', 'make' ),
 				'name'    => 'delay',
 				'default' => ttfmake_get_section_default( 'delay', 'banner' ),
 				'options' => ttfmake_get_section_choices( 'delay', 'banner' )
 			),
-			array(
+			1600 => array(
 				'type'    => 'select',
 				'label'   => __( 'Transition effect', 'make' ),
 				'name'    => 'transition',
@@ -170,9 +170,9 @@ class MAKE_Builder_Sections_Banner_Definition {
 		);
 	}
 
-	public function get_banner_slide_settings() {
+	public function get_slide_settings() {
 		$inputs = array(
-			array(
+			100 => array(
 				'type'    => 'select',
 				'name'    => 'alignment',
 				'label'   => __( 'Content position', 'make' ),
@@ -183,13 +183,13 @@ class MAKE_Builder_Sections_Banner_Definition {
 					'right' => __( 'Right', 'make' ),
 				),
 			),
-			array(
+			200 => array(
 				'type'    => 'checkbox',
 				'label'   => __( 'Darken', 'make' ),
 				'name'    => 'darken',
 				'default' => ttfmake_get_section_default( 'darken', 'banner-slide' )
 			),
-			array(
+			300 => array(
 				'type'    => 'color',
 				'label'   => __( 'Background color', 'make' ),
 				'name'    => 'background-color',
@@ -197,7 +197,6 @@ class MAKE_Builder_Sections_Banner_Definition {
 				'default' => ttfmake_get_section_default( 'background-color', 'banner-slide' )
 			),
 		);
-
 		/**
 		 * Filter the definitions of the Banner slide configuration inputs.
 		 *
@@ -206,11 +205,26 @@ class MAKE_Builder_Sections_Banner_Definition {
 		 * @param array    $inputs    The input definition array.
 		 */
 		$inputs = apply_filters( 'make_banner_slide_configuration', $inputs );
-
 		// Sort the config in case 3rd party code added another input
 		ksort( $inputs, SORT_NUMERIC );
-
 		return $inputs;
+	}
+
+	/**
+	 * Define settings for this section
+	 *
+	 * @since 1.8.11.
+	 *
+	 * @hooked filter make_sections_settings
+	 *
+	 * @param array $settings   The existing array of section settings.
+	 *
+	 * @return array             The modified array of section settings.
+	 */
+	public function section_settings( $settings ) {
+		$settings['banner'] = $this->get_settings();
+		$settings['banner-slide'] = $this->get_slide_settings();
+		return $settings;
 	}
 
 	/**
@@ -288,6 +302,7 @@ class MAKE_Builder_Sections_Banner_Definition {
 	 */
 	public function get_defaults() {
 		return array(
+			'section-type' => 'banner',
 			'title' => '',
 			'arrows' => 1,
 			'dots' => 1,
@@ -313,6 +328,7 @@ class MAKE_Builder_Sections_Banner_Definition {
 	 */
 	public function get_slide_defaults() {
 		return array(
+			'section-type' => 'banner-slide',
 			'alignment' => 'none',
 			'darken' => 0,
 			'background-color' => '',
@@ -326,7 +342,7 @@ class MAKE_Builder_Sections_Banner_Definition {
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @hooked filter make_section_defaults
+	 * @hooked filter make_sections_defaults
 	 *
 	 * @param array $defaults    The existing array of section defaults.
 	 *
@@ -365,22 +381,24 @@ class MAKE_Builder_Sections_Banner_Definition {
 
 					// Handle legacy data layout
 					$id = isset( $slide['id'] ) ? $slide['id']: $s;
-					$data['banner-slides'][$s]['id'] = $id;
+					$slide['id'] = $id;
 
 					/*
 					 * Back compatibility code for slide background images.
 					 *
 					 * @since 1.8.9.
 					 */
-					if ( isset( $data['banner-slides'][$s]['image-id'] ) && '' !== $data['banner-slides'][$s]['image-id'] ) {
-						$data['banner-slides'][$s]['background-image'] = $data['banner-slides'][$s]['image-id'];
+					if ( isset( $slide['image-id'] ) && '' !== $slide['image-id'] ) {
+						$slide['background-image'] = $slide['image-id'];
 					}
 
-					$slide_image = ttfmake_get_image_src( $data['banner-slides'][$s]['background-image'], 'large' );
+					$slide_image = ttfmake_get_image_src( $slide['background-image'], 'large' );
 
 					if ( isset( $slide_image[0] ) ) {
-						$data['banner-slides'][$s]['background-image-url'] = $slide_image[0];
+						$slide['background-image-url'] = $slide_image[0];
 					}
+
+					$data['banner-slides'][$s] = $slide;
 				}
 
 				if ( isset( $data['banner-slide-order'] ) ) {
@@ -432,10 +450,10 @@ class MAKE_Builder_Sections_Banner_Definition {
 		$data = wp_parse_args( $data, $this->get_defaults() );
 
 		$clean_data = array();
-		$clean_data['title']       = $clean_data['label'] = ( isset( $data['title'] ) ) ? apply_filters( 'title_save_pre', $data['title'] ) : '';
+		$clean_data['title'] = $clean_data['label'] = ( isset( $data['title'] ) ) ? apply_filters( 'title_save_pre', $data['title'] ) : '';
 		$clean_data['arrows'] = ( isset( $data['arrows'] ) && 1 === (int) $data['arrows'] ) ? 1 : 0;
-		$clean_data['dots']   = ( isset( $data['dots'] ) && 1 === (int) $data['dots'] ) ? 1 : 0;
-		$clean_data['autoplay']    = ( isset( $data['autoplay'] ) && 1 === (int) $data['autoplay'] ) ? 1 : 0;
+		$clean_data['dots'] = ( isset( $data['dots'] ) && 1 === (int) $data['dots'] ) ? 1 : 0;
+		$clean_data['autoplay'] = ( isset( $data['autoplay'] ) && 1 === (int) $data['autoplay'] ) ? 1 : 0;
 
 		if ( isset( $data['transition'] ) && in_array( $data['transition'], array( 'fade', 'scrollHorz', 'none' ) ) ) {
 			$clean_data['transition'] = $data['transition'];
@@ -511,54 +529,35 @@ class MAKE_Builder_Sections_Banner_Definition {
 		return $clean_data;
 	}
 
-	/**
-	 * Add JS dependencies for the section
-	 *
-	 * @return array
-	 */
-	public function add_js_dependencies( $deps ) {
-		if ( ! is_array( $deps ) ) {
-			$deps = array();
+	public function admin_enqueue_scripts( $hook_suffix ) {
+		// Only load resources if they are needed on the current page
+		if ( ! in_array( $hook_suffix, array( 'post.php', 'post-new.php' ) ) || ! ttfmake_post_type_supports_builder( get_post_type() ) ) {
+			return;
 		}
 
-		wp_register_script(
-			'builder-models-banner',
-			Make()->scripts()->get_js_directory_uri() . '/builder/sections/models/banner.js',
-			array(),
+		wp_enqueue_script(
+			'builder-section-banner',
+			Make()->scripts()->get_js_directory_uri() . '/builder/sections/banner.js',
+			array( 'ttfmake-builder' ),
 			TTFMAKE_VERSION,
 			true
 		);
+	}
 
-		wp_register_script(
-			'builder-models-banner-slide',
-			Make()->scripts()->get_js_directory_uri() . '/builder/sections/models/banner-slide.js',
-			array(),
-			TTFMAKE_VERSION,
-			true
-		);
-
-		wp_register_script(
-			'builder-views-banner-slide',
-			Make()->scripts()->get_js_directory_uri() . '/builder/sections/views/banner-slide.js',
-			array( 'builder-views-item' ),
-			TTFMAKE_VERSION,
-			true
-		);
-
-		wp_register_script(
-			'builder-views-banner',
-			Make()->scripts()->get_js_directory_uri() . '/builder/sections/views/banner.js',
-			array(),
-			TTFMAKE_VERSION,
-			true
-		);
-
-		return array_merge( $deps, array(
-			'builder-models-banner',
-			'builder-models-banner-slide',
-			'builder-views-banner-slide',
-			'builder-views-banner'
-		) );
+	public function print_templates() {
+		$section_definitions = ttfmake_get_sections();
+		set_query_var( 'ttfmake_section_data', $section_definitions[ 'banner' ] );
+		?>
+		<script type="text/template" id="tmpl-ttfmake-section-banner">
+		<?php get_template_part( 'inc/builder/sections/banner/builder-template' ); ?>
+		</script>
+		<?php
+		set_query_var( 'ttfmake_section_data', $section_definitions[ 'banner-slide' ] );
+		?>
+		<script type="text/template" id="tmpl-ttfmake-section-banner-slide">
+		<?php get_template_part( 'inc/builder/sections/banner/builder-template', 'slide' ); ?>
+		</script>
+		<?php
 	}
 }
 endif;
