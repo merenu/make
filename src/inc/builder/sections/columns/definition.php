@@ -320,11 +320,11 @@ class MAKE_Builder_Sections_Columns_Definition {
 						$column_image_id_set = true;
 					}
 
-					$data['columns'][$s] = wp_parse_args( $column, $this->get_column_defaults() );
+					$column = wp_parse_args( $column, $this->get_column_defaults() );
 
 					// Handle legacy data layout
 					$id = isset( $column['id'] ) ? $column['id']: $s;
-					$data['columns'][$s]['id'] = $id;
+					$column['id'] = $id;
 
 					$column_image = '';
 
@@ -332,13 +332,15 @@ class MAKE_Builder_Sections_Columns_Definition {
 						$column_image = ttfmake_get_image_src( $column['image-id'], 'large' );
 
 						if ( isset( $column_image[0] ) ) {
-							$data['columns'][$s]['image-url'] = $column_image[0];
+							$column['image-url'] = $column_image[0];
 						}
 					}
 
 					if ( isset( $column['sidebar-label'] ) && !empty( $column['sidebar-label'] ) && empty( $column['widget-area-id'] ) ) {
-						$data['columns'][$s]['widget-area-id'] = 'ttfmp-' . get_the_ID() . '-' . $data['id'] . '-' . $column['id'];
+						$column['widget-area-id'] = 'ttfmp-' . get_the_ID() . '-' . $data['id'] . '-' . $column['id'];
 					}
+
+					$data['columns'][$s] = $column;
 
 					/*
 					 * Checks for an empty columns accidentally created when coming from
@@ -482,56 +484,6 @@ class MAKE_Builder_Sections_Columns_Definition {
 		return $clean_data;
 	}
 
-	/**
-	 * Add JS dependencies for the section
-	 *
-	 * @return array
-	 */
-	public function add_js_dependencies( $deps ) {
-		if ( ! is_array( $deps ) ) {
-			$deps = array();
-		}
-
-		wp_register_script(
-			'builder-models-text',
-			Make()->scripts()->get_js_directory_uri() . '/builder/sections/models/text.js',
-			array(),
-			TTFMAKE_VERSION,
-			true
-		);
-
-		wp_register_script(
-			'builder-models-text-item',
-			Make()->scripts()->get_js_directory_uri() . '/builder/sections/models/text-item.js',
-			array(),
-			TTFMAKE_VERSION,
-			true
-		);
-
-		wp_register_script(
-			'builder-views-text',
-			Make()->scripts()->get_js_directory_uri() . '/builder/sections/views/text.js',
-			array(),
-			TTFMAKE_VERSION,
-			true
-		);
-
-		wp_register_script(
-			'builder-views-text-item',
-			Make()->scripts()->get_js_directory_uri() . '/builder/sections/views/text-item.js',
-			array( 'builder-views-item' ),
-			TTFMAKE_VERSION,
-			true
-		);
-
-		return array_merge( $deps, array(
-			'builder-models-text',
-			'builder-models-text-item',
-			'builder-views-text',
-			'builder-views-text-item'
-		) );
-	}
-
 	public function admin_enqueue_scripts( $hook_suffix ) {
 		// Only load resources if they are needed on the current page
 		if ( ! in_array( $hook_suffix, array( 'post.php', 'post-new.php' ) ) || ! ttfmake_post_type_supports_builder( get_post_type() ) ) {
@@ -551,13 +503,13 @@ class MAKE_Builder_Sections_Columns_Definition {
 		$section_definitions = ttfmake_get_sections();
 		set_query_var( 'ttfmake_section_data', $section_definitions[ 'text' ] );
 		?>
-		<script type="text/template" id="tmpl-ttfmake-text">
+		<script type="text/template" id="tmpl-ttfmake-section-text">
 		<?php get_template_part( 'inc/builder/sections/columns/builder-template' ); ?>
 		</script>
 		<?php
 		set_query_var( 'ttfmake_section_data', $section_definitions[ 'text-item' ] );
 		?>
-		<script type="text/template" id="tmpl-ttfmake-text-item">
+		<script type="text/template" id="tmpl-ttfmake-section-text-item">
 		<?php get_template_part( 'inc/builder/sections/columns/builder-template', 'column' ); ?>
 		</script>
 		<?php
