@@ -19,10 +19,10 @@
 		$editor: false,
 		$textarea: false,
 
-		initialize: function() {
+		initialize: function( options ) {
 			// this.model is the section origin model
 			// and is set automatically through
-			// the configuration parameter
+			// the options parameter
 			this.changeset = new Backbone.Model();
 			this.$editor = $( '#wp-make_content_editor-wrap' );
 			this.$textarea = $( '#make_content_editor' );
@@ -106,7 +106,7 @@
 		},
 
 		onKeyDown: function( e ) {
-			if (27 == e.keyCode) {
+			if ( 27 == e.keyCode ) {
 				e.preventDefault();
 				e.stopPropagation();
 
@@ -221,6 +221,7 @@
 		template: wp.template( 'ttfmake-overlay-configuration' ),
 		className: 'ttfmake-overlay ttfmake-configuration-overlay',
 		id: 'ttfmake-overlay-configuration',
+		title: 'Configure section',
 
 		events: {
 			'click .ttfmake-overlay-close-update': 'onUpdate',
@@ -228,10 +229,10 @@
 			'click .ttfmake-overlay-wrapper': 'onWrapperClick',
 		},
 
-		initialize: function( configuration, settings ) {
+		initialize: function( options, settings ) {
 			// this.model is the section origin model
 			// and is set automatically through
-			// the configuration parameter
+			// the options parameter
 			this.settings = settings;
 			this.changeset = new Backbone.Model();
 			this.controls = {};
@@ -276,6 +277,9 @@
 			$body.append( this.$el );
 			this.$el.css( 'display', 'table' );
 			$body.on( 'keydown', this.onKeyDown );
+
+			// Focus on first input
+			$( 'input, select', this.$el ).first().focus();
 
 			// Scroll to the open divider
 			var $overlay = $( '.ttfmake-overlay-body', this.$el );
