@@ -136,6 +136,80 @@
 		},
 	} );
 
+	/**
+	 *
+	 * Media overlay class
+	 *
+	 */
+	window.make.overlays.media = Backbone.View.extend( {
+		initialize: function( options ) {
+			// this.model is the section origin model
+			// and is set automatically through
+			// the options parameter
+			this.changeset = new Backbone.Model();
+			// This field will be set on the model
+			// to the selected attachment id.
+			// A [field]-url will be set
+			// with the selected attachment url.
+			this.field = options.field;
+
+			this.frame = wp.media.frames.frame = wp.media( {
+				title: options.title,
+				className: 'media-frame ttfmake-builder-uploader',
+				multiple: false,
+				library: { type: options.type },
+			} );
+
+			this.frame.on( 'open', this.onFrameOpen, this );
+			this.frame.on( 'select', this.onUpdate, this );
+			this.frame.on( 'escape', this.onDiscard, this );
+
+			// Dev helper
+			var trigger = this.frame.trigger;
+			this.frame.trigger = function() {
+				console.log(arguments);
+				return trigger.apply( this, arguments );
+			}
+		},
+
+		open: function() {
+			this.frame.open();
+		},
+
+		onFrameOpen: function( view ) {
+			var attachmentID = this.model.get( this.field );
+
+			if ( attachmentID ) {
+				var selection = this.frame.state().get( 'selection' );
+				var attachment = wp.media.attachment( attachmentID );
+				selection.add( [ attachment ] );
+			}
+		},
+
+		onUpdate: function() {
+			var selection = this.frame.state().get( 'selection' );
+
+			if ( selection.size() ) {
+				var attachment = selection.first().toJSON();
+				this.changeset.set( this.field, attachment.id );
+				this.changeset.set( this.field + '-url', attachment.url );
+			} else {
+				this.changeset.clear();
+			}
+
+			this.model.set( this.changeset.toJSON() );
+			this.remove();
+		},
+
+		onDiscard: function( e ) {
+			this.remove();
+		},
+
+		remove: function() {
+			this.frame.detach();
+		},
+	} );
+
 	window.make.classes.configuration = {};
 
 	/**
