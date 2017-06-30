@@ -22,7 +22,7 @@
 	} );
 
 	var View = make.classes.SectionView.extend( {
-		template: wp.template( 'ttfmake-text' ),
+		template: wp.template( 'ttfmake-section-text' ),
 
 		events: _.extend( {}, make.classes.SectionView.prototype.events, {
 			'click .ttfmake-text-columns-add-column-link': 'onAddColumnClick',
@@ -182,7 +182,7 @@
 	} );
 
 	var ItemView = make.classes.SectionItemView.extend( {
-		template: wp.template( 'ttfmake-text-item' ),
+		template: wp.template( 'ttfmake-section-text-item' ),
 
 		events: _.extend( {}, make.classes.SectionItemView.prototype.events, {
 			'click .ttfmake-text-column-remove': 'onRemoveItemClick',
