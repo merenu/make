@@ -77,6 +77,10 @@
 			return this.$editor.hasClass( 'tmce-active' ) ? 'visual' : 'text';
 		},
 
+		setStyle: function( style ) {
+			$( this.editor.getBody() ).css( style );
+		},
+
 		onUpdate: function( e ) {
 			e.preventDefault();
 			e.stopPropagation();
