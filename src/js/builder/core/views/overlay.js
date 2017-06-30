@@ -50,10 +50,14 @@
 			if ( 'visual' === this.getMode() ) {
 				// Focus on visual editor
 				this.editor.focus();
+				this.editor.on( 'keydown', this.onKeyDown );
 			} else {
 				// Focus on code editor
 				this.$textarea.focus();
+				this.$textarea.on( 'keydown', this.onKeyDown );
 			}
+
+			$body.on( 'keydown', this.onKeyDown );
 		},
 
 		setContent: function () {
@@ -97,10 +101,32 @@
 			}
 		},
 
+		onKeyDown: function( e ) {
+			if (27 == e.keyCode) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				window.make.overlay.remove();
+			}
+		},
+
 		remove: function() {
 			// Remove view events
 			this.undelegateEvents();
+
 			var $body = $( 'body' );
+
+			// Remove DOM events
+			$body.off( 'keydown', this.onKeyDown );
+			this.$textarea.off( 'keydown', this.onKeyDown );
+
+			if ( this.editor ) {
+				this.editor.off( 'keydown', this.onKeyDown );
+				// Clear selection
+				this.editor.selection.select( this.editor.getBody(), true );
+				this.editor.selection.collapse( false );
+			}
+
 			$body.removeClass( 'modal-open' );
 			this.$el.hide();
 		},
@@ -171,7 +197,7 @@
 			// Show the overlay
 			$body.append( this.$el );
 			this.$el.css( 'display', 'table' );
-			$body.on( 'keydown', this.onKeyDown.bind( this ) );
+			$body.on( 'keydown', this.onKeyDown );
 
 			// Scroll to the open divider
 			var $overlay = $( '.ttfmake-overlay-body', this.$el );
@@ -245,20 +271,25 @@
 			if (27 == e.keyCode) {
 				e.preventDefault();
 				e.stopPropagation();
-				this.remove();
+
+				window.make.overlay.remove();
 			}
 		},
 
 		remove: function() {
+			var $body = $( 'body' );
+
+			// Remove DOM events
+			$body.off( 'keydown', this.onKeyDown );
+
 			for ( var name in this.controls ) {
 				this.controls[name].remove();
 			}
 
-			Backbone.View.prototype.remove.apply( this, arguments );
-
-			var $body = $( 'body' );
 			$body.removeClass( 'modal-open' );
-			$body.off( 'keydown', this.onKeyDown.bind( this ) );
+
+			// Remove view events
+			Backbone.View.prototype.remove.apply( this, arguments );
 		}
 	} );
 
