@@ -89,7 +89,7 @@
 		onSectionCollectionChanged: function( sectionModel ) {
 			var jsonTextarea = $( '#ttfmake-sections-json' );
 			jsonTextarea.val( JSON.stringify( this.collection.toJSON() ) );
-			console.log( jsonTextarea.val() );
+			// console.log( jsonTextarea.val() );
 		},
 
 		onSectionModelsSorted: function( sectionCollection ) {
@@ -213,7 +213,7 @@
 		onRemoveSectionClick: function ( e ) {
 			e.preventDefault();
 
-			if ( false === window.confirm( builderSettings.confirmString ) ) {
+			if ( ! window.confirm( builderSettings.confirmString ) ) {
 				return;
 			}
 
@@ -286,11 +286,12 @@
 		},
 
 		afterRender: function() {
-			this.listenTo( this.model, 'change:content', this.onItemModelContentChange );
+			// Noop
 		},
 
 		onConfigureItemClick: function( e ) {
 			e.preventDefault();
+			e.stopPropagation();
 
 			this.toggleConfigureDropdown();
 		},
@@ -318,11 +319,6 @@
 			var $configureItemDropdown = $( '.configure-item-dropdown', this.$el );
 			$cogLink.toggleClass( 'active' );
 			$configureItemDropdown.toggle();
-		},
-
-		onItemModelContentChange: function() {
-			var iframe = $( 'iframe', this.$el ).get( 0 );
-			make.utils.setFrameContent( iframe, this.model.get( 'content' ) );
 		},
 
 		unbindEvents: function() {
