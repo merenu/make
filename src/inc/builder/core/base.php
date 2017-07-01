@@ -265,19 +265,7 @@ class TTFMAKE_Builder_Base {
 		 *
 		 * @param array    $dependencies    The list of dependencies.
 		 */
-		// $dependencies = apply_filters(
-		// 	'make_builder_js_dependencies',
-		// 	array_merge(
-		// 		$dependencies,
-		// 		array(
-		// 			'ttfmake-builder/js/models/section.js',
-		// 			'ttfmake-builder/js/collections/sections.js',
-		// 			'ttfmake-builder/js/views/menu.js',
-		// 			'ttfmake-builder/js/views/section.js',
-		// 			'ttfmake-builder/js/views/overlay.js'
-		// 		)
-		// 	)
-		// );
+		$dependencies = apply_filters( 'make_builder_js_dependencies', $dependencies );
 
 		wp_enqueue_script(
 			'ttfmake-builder',
