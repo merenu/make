@@ -173,16 +173,19 @@
 			this.frame.on( 'escape', this.onDiscard, this );
 
 			// Dev helper
-			var trigger = this.frame.trigger;
-			this.frame.trigger = function() {
-				console.log(arguments);
-				return trigger.apply( this, arguments );
-			}
+			// var trigger = this.frame.trigger;
+			// this.frame.trigger = function() {
+			// 	console.log(arguments);
+			// 	return trigger.apply( this, arguments );
+			// }
 		},
 
 		render: function() {
 			this.setElement( this.frame.$el );
-			$( '.media-sidebar', this.$el ).append( this.removeImageTemplate() );
+
+			if ( parseInt( this.model.get( this.field ), 10 ) ) {
+				$( '.media-sidebar', this.$el ).append( this.removeImageTemplate() );
+			}
 		},
 
 		open: function() {
@@ -192,7 +195,7 @@
 		onFrameOpen: function() {
 			this.render();
 
-			var attachmentID = this.model.get( this.field );
+			var attachmentID = parseInt( this.model.get( this.field ), 10 );
 
 			if ( attachmentID ) {
 				var selection = this.frame.state().get( 'selection' );
@@ -342,11 +345,16 @@
 		applyValues: function( values ) {
 			for ( var field in values ) {
 				var value = values[field];
-				var control = this.controls[field];
+				this.applyValue( field, value );
+			}
+		},
 
-				if ( control ) {
-					control.setValue( value );
-				}
+		applyValue: function( field, value ) {
+			console.log(field, value)
+			var control = this.controls[field];
+
+			if ( control ) {
+				control.setValue( value, this.model );
 			}
 		},
 
@@ -682,104 +690,65 @@
 	window.make.classes.configuration.image = window.make.classes.configuration.control.extend( {
 		template: wp.template( 'ttfmake-settings-image' ),
 
-		sidebars: {
-			default: wp.media.view.Sidebar,
-			image: wp.media.view.Sidebar.extend( {
-					render: function() {
-						this.$el.html( wp.template( 'ttfmake-media-frame-remove-image' ) );
-						return this;
-					},
-				} ),
-		},
-
-		currentAttachmentID: false,
-
 		events: {
 			'click .ttfmake-media-uploader-placeholder': 'onMediaAdd',
 		},
 
+		initialize: function( setting, overlay ) {
+			window.make.classes.configuration.control.prototype.initialize.apply( this, arguments );
+
+			this.model = new Backbone.Model();
+			this.listenTo( this.model, 'change:background-image-url', this.onBackgroundChanged );
+		},
+
 		onMediaAdd: function( e ) {
-			wp.media.view.Sidebar = this.sidebars.image;
-
-			if ( window.frame ) {
-				window.frame.detach();
-			}
-
-			// Create the media frame.
-			window.frame = wp.media.frames.frame = wp.media( {
-				title: $( e.currentTarget ).data( 'title' ),
-				className: 'media-frame ttfmake-builder-uploader',
-				multiple: false,
-				library: { type: 'image' },
+			window.make.media = new window.make.overlays.media( {
+				model: this.model,
+				field: 'background-image',
+				type: 'image',
+				title: $( e.target ).data( 'title' )
 			} );
 
-			frame.on( 'open', this.onFrameOpen.bind( this ) );
-			frame.on( 'select', this.onMediaSelected.bind( this ) );
-			frame.on( 'close', this.onFrameClose.bind( this ) );
-
-			// Finally, open the modal
-			frame.open();
-			$( 'body' ).on( 'click', '.ttfmake-media-frame-remove-image', this.onMediaRemoved.bind( this ) );
+			window.make.media.open();
 		},
 
-		onFrameOpen: function() {
-			var attachmentID = this.getValue();
+		onBackgroundChanged: function( settingModel ) {
+			var $placeholder = $( '.ttfmake-media-uploader-placeholder', this.$el );
+			var backgroundImageURL = settingModel.get( 'background-image-url' );
 
-			if ( attachmentID ) {
-				var selection = window.frame.state().get( 'selection' );
-				var attachment = wp.media.attachment( attachmentID );
-				selection.add( [ attachment ] );
-				window.frame.$el.addClass( 'ttfmake-media-selected' );
+			$placeholder.css( 'background-image', 'url(' + backgroundImageURL + ')' );
+
+			if ( '' !== backgroundImageURL ) {
+				$placeholder.parent().addClass( 'ttfmake-has-image-set' );
+			} else {
+				$placeholder.parent().removeClass( 'ttfmake-has-image-set' );
 			}
-		},
 
-		onFrameClose: function() {
-			wp.media.view.Sidebar = this.sidebars.default;
-		},
-
-		onMediaSelected: function() {
-			var attachment = frame.state().get( 'selection' ).first().toJSON();
-			this.setValue( attachment.id );
-			this.overlay.trigger( 'setting-updated', { name: this.setting.name, value: attachment.id } );
-		},
-
-		onMediaRemoved: function() {
-			this.overlay.trigger( 'setting-updated', { name: this.setting.name, value: '' } );
-			this.setValue( '' );
-			frame.close();
+			this.overlay.trigger( 'setting-updated', { name: 'background-image', value: settingModel.get( 'background-image' ) } );
+			this.overlay.trigger( 'setting-updated', { name: 'background-image-url', value: settingModel.get( 'background-image-url' ) } );
 		},
 
 		setValue: function( value ) {
-			var $el = this.$el;
+			var attachment = wp.media.attachment( value );
 			var $placeholder = $( '.ttfmake-media-uploader-placeholder', this.$el );
 
-			if ( '' !== value ) {
-				var attachment = wp.media.attachment( value );
-				var self = this;
-
+			if ( parseInt( value, 10 ) ) {
 				attachment.fetch( {
 					success: function( attachmentMeta ) {
 						$placeholder.css(
 							'background-image',
 							'url(' + attachmentMeta.get( 'url' ) + ')'
 						);
-						$el.addClass( 'ttfmake-has-image-set' );
-						self.currentAttachmentID = value;
-					}
+
+						$placeholder.parent().addClass( 'ttfmake-has-image-set' );
+						this.model.set( 'background-image', value );
+						this.model.set( 'background-image-url', attachmentMeta.get( 'url' ) );
+					}.bind( this )
 				} );
 			} else {
-				this.currentAttachmentID = false;
 				$placeholder.css( 'background-image', '' );
-				this.$el.removeClass( 'ttfmake-has-image-set' );
+				$placeholder.parent().removeClass( 'ttfmake-has-image-set' );
 			}
-		},
-
-		getValue: function() {
-			return this.currentAttachmentID;
-		},
-
-		remove: function() {
-			$( 'body' ).off( 'click', '.ttfmake-media-frame-remove-image', this.onMediaRemoved.bind( this ) );
 		},
 	} );
 
