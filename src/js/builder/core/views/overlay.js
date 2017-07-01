@@ -142,6 +142,12 @@
 	 *
 	 */
 	window.make.overlays.media = Backbone.View.extend( {
+		removeImageTemplate: wp.media.template( 'ttfmake-media-overlay-remove-image' ),
+
+		events: {
+			'click .ttfmake-remove-image-from-modal': 'onRemoveClick'
+		},
+
 		initialize: function( options ) {
 			// this.model is the section origin model
 			// and is set automatically through
@@ -161,7 +167,8 @@
 			} );
 
 			this.frame.on( 'open', this.onFrameOpen, this );
-			this.frame.on( 'select', this.onUpdate, this );
+			this.frame.on( 'select', this.onSelect, this );
+			this.frame.on( 'selection:toggle', this.onToggleSelection, this );
 			this.frame.on( 'escape', this.onDiscard, this );
 
 			// Dev helper
@@ -172,21 +179,46 @@
 			}
 		},
 
+		render: function() {
+			this.setElement( this.frame.$el );
+			$( '.media-sidebar', this.$el ).append( this.removeImageTemplate() );
+		},
+
 		open: function() {
 			this.frame.open();
 		},
 
-		onFrameOpen: function( view ) {
+		onFrameOpen: function() {
+			this.render();
+
 			var attachmentID = this.model.get( this.field );
 
 			if ( attachmentID ) {
 				var selection = this.frame.state().get( 'selection' );
 				var attachment = wp.media.attachment( attachmentID );
 				selection.add( [ attachment ] );
+				$( '.ttfmake-media-overlay-remove-image', this.$el ).show();
 			}
 		},
 
-		onUpdate: function() {
+		onToggleSelection: function() {
+			if ( this.frame.state().get( 'selection' ).size() ) {
+				$( '.ttfmake-media-overlay-remove-image', this.$el ).show();
+			} else {
+				$( '.ttfmake-media-overlay-remove-image', this.$el ).hide();
+			}
+		},
+
+		onRemoveClick: function( e ) {
+			e.preventDefault();
+
+			this.changeset.set( this.field, '' );
+			this.changeset.set( this.field + '-url', '' );
+			this.model.set( this.changeset.toJSON() );
+			this.remove();
+		},
+
+		onSelect: function() {
 			var selection = this.frame.state().get( 'selection' );
 
 			if ( selection.size() ) {
@@ -206,6 +238,8 @@
 		},
 
 		remove: function() {
+			this.undelegateEvents();
+			this.frame.close();
 			this.frame.detach();
 		},
 	} );
