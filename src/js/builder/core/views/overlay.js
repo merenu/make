@@ -27,6 +27,7 @@
 			this.$editor = $( '#wp-make_content_editor-wrap' );
 			this.$textarea = $( '#make_content_editor' );
 			this.editor = tinyMCE.get( 'make_content_editor' );
+			this.field = options.field;
 
 			return this.render();
 		},
@@ -62,9 +63,9 @@
 
 		setContent: function () {
 			if ( 'visual' === this.getMode() ) {
-				this.editor.setContent( switchEditors.wpautop( this.model.get( 'content' ) ) );
+				this.editor.setContent( switchEditors.wpautop( this.model.get( this.field ) ) );
 			} else {
-				this.$textarea.val( switchEditors.pre_wpautop( this.model.get( 'content' ) ) );
+				this.$textarea.val( switchEditors.pre_wpautop( this.model.get( this.field ) ) );
 			}
 		},
 
@@ -85,7 +86,7 @@
 			e.preventDefault();
 			e.stopPropagation();
 
-			this.model.set( { content: this.getContent() } );
+			this.model.set( this.field, this.getContent() );
 			this.remove();
 		},
 
