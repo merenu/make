@@ -269,7 +269,7 @@
 
 	var SectionItemView = Backbone.View.extend( {
 		events: {
-			'click .ttfmake-configure-item-button': 'onConfigureItemClick',
+			'click .ttfmake-configure-item-button': 'onConfigureDropdownClick',
 			'click .edit-content-link': 'onEditItemContentClick',
 		},
 
@@ -289,7 +289,7 @@
 			// Noop
 		},
 
-		onConfigureItemClick: function( e ) {
+		onConfigureDropdownClick: function( e ) {
 			e.preventDefault();
 			e.stopPropagation();
 
