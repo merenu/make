@@ -202,10 +202,6 @@
 		onUploaderSlideClick: function( e ) {
 			e.preventDefault();
 
-			if ( window.make.media ) {
-				window.make.media.remove();
-			}
-
 			window.make.media = new window.make.overlays.media( {
 				model: this.model,
 				field: 'background-image',
