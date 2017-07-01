@@ -200,10 +200,6 @@
 			var sectionSettings = sectionData.settings[ sectionType ];
 
 			if ( sectionSettings ) {
-				if ( window.make.overlay ) {
-					window.make.overlay.remove();
-				}
-
 				window.make.overlay = new window.make.overlays.configuration( { model: this.model }, sectionSettings );
 				window.make.overlay.open();
 			}

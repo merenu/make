@@ -228,10 +228,6 @@
 		onConfigureSectionClick: function( e ) {
 			e.preventDefault();
 
-			if ( window.make.overlay ) {
-				window.make.overlay.remove();
-			}
-
 			var sectionType = this.model.get( 'section-type' );
 			var sectionSettings = sectionData.settings[ sectionType ];
 
@@ -299,11 +295,7 @@
 		onEditItemContentClick: function( e ) {
 			e.preventDefault();
 
-			if ( window.make.overlay ) {
-				window.make.overlay.remove();
-			}
-
-			window.make.overlay = new window.make.overlays.content( { model: this.model } );
+			window.make.overlay = new window.make.overlays.content( { model: this.model, field: 'content' } );
 			window.make.overlay.open();
 		},
 
