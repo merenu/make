@@ -535,10 +535,19 @@ class MAKE_Builder_Sections_Banner_Definition {
 			return;
 		}
 
+		/**
+		 * Filter any available extensions for the Make builder JS.
+		 *
+		 * @since 1.8.11.
+		 *
+		 * @param array    $dependencies    The list of dependencies.
+		 */
+		$dependencies = apply_filters( 'make_builder_js_extensions', array( 'ttfmake-builder' ) );
+
 		wp_enqueue_script(
 			'builder-section-banner',
 			Make()->scripts()->get_js_directory_uri() . '/builder/sections/banner.js',
-			array( 'ttfmake-builder' ),
+			$dependencies,
 			TTFMAKE_VERSION,
 			true
 		);

@@ -30,7 +30,6 @@ class MAKE_Builder_Sections_Gallery_Definition {
 		add_filter( 'make_sections_settings', array( $this, 'section_settings' ) );
 		add_filter( 'make_sections_defaults', array( $this, 'section_defaults' ) );
 		add_filter( 'make_get_section_json', array ( $this, 'get_section_json' ), 10, 1 );
-		add_filter( 'make_builder_js_dependencies', array( $this, 'add_js_dependencies' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 20 );
 		add_action( 'admin_footer', array( $this, 'print_templates' ) );
 
