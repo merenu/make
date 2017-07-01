@@ -40,7 +40,7 @@ class TTFMAKE_Section_Definitions {
 	public function register() {
 		MAKE_Builder_Sections_Columns_Definition::register();
 		MAKE_Builder_Sections_Banner_Definition::register();
-		// MAKE_Builder_Sections_Gallery_Definition::register();
+		MAKE_Builder_Sections_Gallery_Definition::register();
 
 		// Add the section JS
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
