@@ -545,6 +545,13 @@ class MAKE_Builder_Sections_Banner_Definition {
 	}
 
 	public function print_templates() {
+		global $hook_suffix, $typenow;
+
+		// Only show when adding/editing pages
+		if ( ! ttfmake_post_type_supports_builder( $typenow ) || ! in_array( $hook_suffix, array( 'post.php', 'post-new.php' ) )) {
+			return;
+		}
+
 		$section_definitions = ttfmake_get_sections();
 		set_query_var( 'ttfmake_section_data', $section_definitions[ 'banner' ] );
 		?>
