@@ -183,7 +183,7 @@
 		render: function() {
 			this.setElement( this.frame.$el );
 
-			if ( parseInt( this.model.get( this.field ), 10 ) ) {
+			if ( this.model.get( this.field ) ) {
 				$( '.media-sidebar', this.$el ).append( this.removeImageTemplate() );
 			}
 		},
@@ -195,7 +195,7 @@
 		onFrameOpen: function() {
 			this.render();
 
-			var attachmentID = parseInt( this.model.get( this.field ), 10 );
+			var attachmentID = this.model.get( this.field );
 
 			if ( attachmentID ) {
 				var selection = this.frame.state().get( 'selection' );
@@ -350,7 +350,6 @@
 		},
 
 		applyValue: function( field, value ) {
-			console.log(field, value)
 			var control = this.controls[field];
 
 			if ( control ) {
@@ -732,7 +731,7 @@
 			var attachment = wp.media.attachment( value );
 			var $placeholder = $( '.ttfmake-media-uploader-placeholder', this.$el );
 
-			if ( parseInt( value, 10 ) ) {
+			if ( value ) {
 				attachment.fetch( {
 					success: function( attachmentMeta ) {
 						$placeholder.css(

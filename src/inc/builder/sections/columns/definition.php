@@ -281,6 +281,8 @@ class MAKE_Builder_Sections_Columns_Definition {
 
 			if ( isset( $image[0] ) ) {
 				$data['background-image-url'] = $image[0];
+			} else {
+				$data['background-image'] = '';
 			}
 
 			if ( isset( $data['columns'] ) && is_array( $data['columns'] ) ) {
@@ -429,8 +431,10 @@ class MAKE_Builder_Sections_Columns_Definition {
 			$clean_data['columns-number'] = ttfmake_sanitize_section_choice( $data['columns-number'], 'columns-number', $data['section-type'] );
 		}
 
-		if ( isset( $data['background-image'] ) ) {
+		if ( isset( $data['background-image'] ) && '' !== $data['background-image'] ) {
 			$clean_data['background-image'] = ttfmake_sanitize_image_id( $data['background-image'] );
+		} else {
+			$clean_data['background-image'] = '';
 		}
 
 		if ( isset( $data['background-position'] ) ) {

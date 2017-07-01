@@ -353,6 +353,8 @@ class MAKE_Builder_Sections_Gallery_Definition {
 
 			if ( isset( $image[0] ) ) {
 				$data['background-image-url'] = $image[0];
+			} else {
+				$data['background-image'] = '';
 			}
 
 			if ( isset( $data['gallery-items'] ) && is_array( $data['gallery-items'] ) ) {
@@ -371,6 +373,8 @@ class MAKE_Builder_Sections_Gallery_Definition {
 
 					if( isset( $item_image[0] ) ) {
 						$item['background-image-url'] = $item_image[0];
+					} else {
+						$item['background-image'] = '';
 					}
 
 					$data['gallery-items'][$s] = $item;
@@ -418,8 +422,10 @@ class MAKE_Builder_Sections_Gallery_Definition {
 			$clean_data['aspect'] = ttfmake_sanitize_section_choice( $data['aspect'], 'aspect', $data['section-type'] );
 		}
 
-		if ( isset( $data['background-image'] ) ) {
+		if ( isset( $data['background-image'] ) && '' !== $data['background-image'] ) {
 			$clean_data['background-image'] = ttfmake_sanitize_image_id( $data['background-image'] );
+		} else {
+			$clean_data['background-image'] = '';
 		}
 
 		if ( isset( $data['title'] ) ) {
@@ -475,6 +481,12 @@ class MAKE_Builder_Sections_Gallery_Definition {
 
 				if ( isset( $item['background-image'] ) ) {
 					$clean_item_data['background-image'] = ttfmake_sanitize_image_id( $item['background-image'] );
+				}
+
+				if ( isset( $item['background-image'] ) && '' !== $item['background-image'] ) {
+					$clean_item_data['background-image'] = ttfmake_sanitize_image_id( $item['background-image'] );
+				} else {
+					$clean_item_data['background-image'] = '';
 				}
 
 				if ( isset( $item['open-new-tab'] ) && $item['open-new-tab'] == 1 ) {
