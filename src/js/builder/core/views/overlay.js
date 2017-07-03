@@ -353,7 +353,7 @@
 			var control = this.controls[field];
 
 			if ( control ) {
-				control.setValue( value, this.model );
+				control.setValue( value );
 			}
 		},
 
@@ -728,25 +728,19 @@
 		},
 
 		setValue: function( value ) {
-			var attachment = wp.media.attachment( value );
 			var $placeholder = $( '.ttfmake-media-uploader-placeholder', this.$el );
+			var url = this.overlay.model.get( 'background-image-url' );
 
 			if ( value ) {
-				attachment.fetch( {
-					success: function( attachmentMeta ) {
-						$placeholder.css(
-							'background-image',
-							'url(' + attachmentMeta.get( 'url' ) + ')'
-						);
-
-						$placeholder.parent().addClass( 'ttfmake-has-image-set' );
-						this.model.set( 'background-image', value );
-						this.model.set( 'background-image-url', attachmentMeta.get( 'url' ) );
-					}.bind( this )
-				} );
+				$placeholder.css( 'background-image', 'url(' + url + ')' );
+				$placeholder.parent().addClass( 'ttfmake-has-image-set' );
+				this.model.set( 'background-image', value );
+				this.model.set( 'background-image-url', url );
 			} else {
 				$placeholder.css( 'background-image', '' );
 				$placeholder.parent().removeClass( 'ttfmake-has-image-set' );
+				this.model.set( 'background-image', '' );
+				this.model.set( 'background-image-url', '' );
 			}
 		},
 	} );
