@@ -220,28 +220,22 @@
 
 	} );
 
-	make.factory.model = _.wrap( make.factory.model, function( func, attrs ) {
-		if ( 'banner' === attrs[ 'section-type' ] ) {
-			return new Model( attrs );
+	make.factory.model = _.wrap( make.factory.model, function( func, attrs, BaseClass ) {
+		switch ( attrs[ 'section-type' ] ) {
+			case 'banner': BaseClass = Model; break;
+			case 'banner-slide': BaseClass = ItemModel; break;
 		}
 
-		if ( 'banner-slide' === attrs[ 'section-type' ] ) {
-			return new ItemModel( attrs );
-		}
-
-		return func( attrs );
+		return func( attrs, BaseClass );
 	} );
 
-	make.factory.view = _.wrap( make.factory.view, function( func, options ) {
-		if ( 'banner' === options.model.get( 'section-type' ) ) {
-			return new View( options );
+	make.factory.view = _.wrap( make.factory.view, function( func, options, BaseClass ) {
+		switch ( options.model.get( 'section-type' ) ) {
+			case 'banner': BaseClass = View; break;
+			case 'banner-slide': BaseClass = ItemView; break;
 		}
 
-		if ( 'banner-slide' === options.model.get( 'section-type' ) ) {
-			return new ItemView( options );
-		}
-
-		return func( options );
+		return func( options, BaseClass );
 	} );
 
 } ) ( jQuery, _, Backbone, ttfmakeBuilderSettings, ttfMakeSections );

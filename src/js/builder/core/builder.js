@@ -6,12 +6,18 @@
 	} );
 
 	var Factory = {
-		model: function( attrs ) {
-			// Noop
+		model: function( attrs, BaseClass ) {
+			return window.make.factory.extend( attrs, BaseClass );
 		},
 
-		view: function( options ) {
-			// Noop
+		view: function( options, BaseClass ) {
+			return window.make.factory.extend( options, BaseClass );
+		},
+
+		extend: function( options, BaseClass ) {
+			if ( BaseClass && options ) {
+				return new BaseClass( options );
+			}
 		}
 	};
 
@@ -23,7 +29,7 @@
 			$( 'body' ).on( 'click', function() {
 				$( '.ttfmake-configure-item-button', this.$el ).removeClass( 'active' );
 				$( '.configure-item-dropdown', this.$el ).hide();
-			});
+			} );
 		},
 
 		load: function( sectionData ) {
@@ -89,7 +95,7 @@
 		onSectionCollectionChanged: function( sectionModel ) {
 			var jsonTextarea = $( '#ttfmake-sections-json' );
 			jsonTextarea.val( JSON.stringify( this.collection.toJSON() ) );
-			console.log( jsonTextarea.val() );
+			// console.log( jsonTextarea.val() );
 		},
 
 		onSectionModelsSorted: function( sectionCollection ) {

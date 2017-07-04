@@ -236,28 +236,22 @@
 		}
 	} );
 
-	make.factory.model = _.wrap( make.factory.model, function( func, attrs ) {
-		if ( 'text' === attrs[ 'section-type' ] ) {
-			return new Model( attrs );
+	make.factory.model = _.wrap( make.factory.model, function( func, attrs, BaseClass ) {
+		switch ( attrs[ 'section-type' ] ) {
+			case 'text': BaseClass = Model; break;
+			case 'text-item': BaseClass = ItemModel; break;
 		}
 
-		if ( 'text-item' === attrs[ 'section-type' ] ) {
-			return new ItemModel( attrs );
-		}
-
-		return func( attrs );
+		return func( attrs, BaseClass );
 	} );
 
-	make.factory.view = _.wrap( make.factory.view, function( func, options ) {
-		if ( 'text' === options.model.get( 'section-type' ) ) {
-			return new View( options );
+	make.factory.view = _.wrap( make.factory.view, function( func, options, BaseClass ) {
+		switch ( options.model.get( 'section-type' ) ) {
+			case 'text': BaseClass = View; break;
+			case 'text-item': BaseClass = ItemView; break;
 		}
 
-		if ( 'text-item' === options.model.get( 'section-type' ) ) {
-			return new ItemView( options );
-		}
-
-		return func( options );
+		return func( options, BaseClass );
 	} );
 
 } ) ( jQuery, _, Backbone, ttfmakeBuilderSettings, ttfMakeSections );
