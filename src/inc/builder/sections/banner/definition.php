@@ -550,7 +550,9 @@ class MAKE_Builder_Sections_Banner_Definition {
 		 *
 		 * @param array    $dependencies    The list of dependencies.
 		 */
-		$dependencies = apply_filters( 'make_builder_js_extensions', array( 'ttfmake-builder' ) );
+		$dependencies = apply_filters( 'make_builder_js_extensions', array(
+			'ttfmake-builder', 'ttfmake-builder-overlay'
+		) );
 
 		wp_enqueue_script(
 			'builder-section-banner',

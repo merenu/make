@@ -237,7 +237,6 @@ class MAKE_Builder_Sections_Columns_Definition {
 	public function get_column_defaults() {
 		return array(
 			'section-type' => 'text-item',
-			'size' => '',
 			'content' => '',
 			'sidebar-label' => '',
 			'widget-area-id' => '',
@@ -494,10 +493,21 @@ class MAKE_Builder_Sections_Columns_Definition {
 			return;
 		}
 
+		/**
+		 * Filter any available extensions for the Make builder JS.
+		 *
+		 * @since 1.8.11.
+		 *
+		 * @param array    $dependencies    The list of dependencies.
+		 */
+		$dependencies = apply_filters( 'make_builder_js_extensions', array(
+			'ttfmake-builder', 'ttfmake-builder-overlay'
+		) );
+
 		wp_enqueue_script(
 			'builder-section-columns',
 			Make()->scripts()->get_js_directory_uri() . '/builder/sections/columns.js',
-			array( 'ttfmake-builder' ),
+			$dependencies,
 			TTFMAKE_VERSION,
 			true
 		);
