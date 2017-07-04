@@ -127,10 +127,10 @@ class TTFMAKE_Builder_Save {
 				 * @param string $section_type    The type of section being handled.
 				 */
 				$id = $section['id'];
-				$clean_sections[ $id ]                 = apply_filters( 'make_prepare_data_section', call_user_func_array( $registered_sections[ $section['section-type'] ]['save_callback'], array( $section ) ), $section, $section['section-type'] );
-				$clean_sections[ $id ]['state']        = ( isset( $section['state'] ) ) ? sanitize_key( $section['state'] ) : 'open';
+				$clean_sections[ $id ]['id'] = $id;
+				$clean_sections[ $id ]['state'] = ( isset( $section['state'] ) ) ? sanitize_key( $section['state'] ) : 'open';
 				$clean_sections[ $id ]['section-type'] = $section['section-type'];
-				$clean_sections[ $id ]['id']           = $id;
+				$clean_sections[ $id ] = apply_filters( 'make_prepare_data_section', call_user_func_array( $registered_sections[ $section['section-type'] ]['save_callback'], array( $section ) ), $section, $section['section-type'] );
 			}
 		}
 

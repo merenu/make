@@ -453,7 +453,11 @@ class MAKE_Builder_Sections_Banner_Definition {
 	public function save( $data ) {
 		$data = wp_parse_args( $data, $this->get_defaults() );
 
-		$clean_data = array();
+		$clean_data = array(
+			'id' => $data['id'],
+			'section-type' => $data['section-type'],
+			'state' => $data['state'],
+		);
 		$clean_data['title'] = $clean_data['label'] = ( isset( $data['title'] ) ) ? apply_filters( 'title_save_pre', $data['title'] ) : '';
 		$clean_data['arrows'] = ( isset( $data['arrows'] ) && 1 === (int) $data['arrows'] ) ? 1 : 0;
 		$clean_data['dots'] = ( isset( $data['dots'] ) && 1 === (int) $data['dots'] ) ? 1 : 0;

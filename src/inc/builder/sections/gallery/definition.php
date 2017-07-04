@@ -404,7 +404,11 @@ class MAKE_Builder_Sections_Gallery_Definition {
 	 */
 	public function save( $data ) {
 		$data = wp_parse_args( $data, $this->get_defaults() );
-		$clean_data = array();
+		$clean_data = array(
+			'id' => $data['id'],
+			'section-type' => $data['section-type'],
+			'state' => $data['state'],
+		);
 
 		if ( isset( $data['columns'] ) ) {
 			$clean_data['columns'] = ttfmake_sanitize_section_choice( $data['columns'], 'columns', $data['section-type'] );
