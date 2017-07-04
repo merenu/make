@@ -2,28 +2,28 @@
 /**
  * @package Make
  */
+ global $post;
 
-global $ttfmake_section_data, $ttfmake_sections;
-$text_columns = ttfmake_builder_get_text_array( $ttfmake_section_data );
-$darken   = ( isset( $ttfmake_section_data[ 'darken' ] ) ) ? absint( $ttfmake_section_data[ 'darken' ] ) : 0;
+ $darken   = ( isset( $section_data[ 'darken' ] ) ) ? absint( $section_data[ 'darken' ] ) : 0;
 ?>
-
-<section id="<?php echo esc_attr( ttfmake_get_builder_save()->section_html_id( $ttfmake_section_data ) ); ?>" class="builder-section<?php echo esc_attr( ttfmake_builder_get_text_class( $ttfmake_section_data, $ttfmake_sections ) ); ?>" style="<?php echo esc_attr( ttfmake_builder_get_text_style( $ttfmake_section_data ) ); ?>">
-	<?php if ( '' !== $ttfmake_section_data['title'] ) : ?>
+<section id="<?php echo Make()->section()->get_html_id( $section_data ); ?>" class="builder-section <?php echo esc_attr( Make()->section()->get_html_class( $section_data ) ); ?>" style="<?php echo esc_attr( Make()->section()->get_section_styles( $section_data ) ); ?>">
+	<?php if ( '' !== $section_data['title'] ) : ?>
 	<h3 class="builder-text-section-title">
-		<?php echo apply_filters( 'the_title', $ttfmake_section_data['title'] ); ?>
+		<?php echo apply_filters( 'the_title', $section_data['title'] ); ?>
 	</h3>
 	<?php endif; ?>
+
 	<div class="builder-section-content">
-		<?php $columns_layout_size = $ttfmake_section_data['columns-number']; ?>
+		<?php $text_columns = $section_data['columns']; ?>
+		<?php $columns_layout_size = $section_data['columns-number']; ?>
 		<?php if ( ! empty( $text_columns ) ) : $i = 1; foreach ( $text_columns as $column ) : ?>
 			<?php if ( $i == 1 ): ?>
 				<div class="builder-text-row">
 			<?php endif; ?>
-			<div class="builder-text-column builder-text-column-<?php echo $i; ?>" id="builder-section-<?php echo esc_attr( $ttfmake_section_data['id'] ); ?>-column-<?php echo $i; ?>">
+			<div class="builder-text-column builder-text-column-<?php echo $i; ?>" id="builder-section-<?php echo esc_attr( $section_data['id'] ); ?>-column-<?php echo $i; ?>">
 				<?php if ( '' !== $column['content'] ) : ?>
 				<div class="builder-text-content">
-					<?php ttfmake_get_builder_save()->the_builder_content( $column['content'] ); ?>
+					<?php Make()->section()->get_content( $column['content'] ); ?>
 				</div>
 				<?php endif; ?>
 			</div>

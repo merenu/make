@@ -345,10 +345,24 @@ class TTFMAKE_Builder_Save {
 			$registered_sections = ttfmake_get_sections();
 
 			if ( !isset( $ttfmake_section_data['draft'] ) || $ttfmake_section_data['draft'] != 1 ) {
-				// Get the template for the section
-				ttfmake_load_section_template(
+				$section_display_template = apply_filters(
+					'make_section_display_template_relative_path',
 					$registered_sections[ $section['section-type'] ]['display_template'],
-					$registered_sections[ $section['section-type'] ]['path']
+					$ttfmake_section_data
+				);
+
+				$section_path = apply_filters(
+					'make_section_path',
+					$registered_sections[ $section['section-type'] ]['path'],
+					$ttfmake_section_data
+				);
+
+				// Get the template for the section
+				Make()->section()->load_section_template(
+					$section_display_template,
+					$section_path,
+					false,
+					$ttfmake_section_data
 				);
 			}
 

@@ -3,23 +3,24 @@
  * @package Make
  */
 
-global $ttfmake_section_data, $ttfmake_sections;
-$gallery  = $ttfmake_section_data['gallery-items'];
-$darken   = ( isset( $ttfmake_section_data[ 'darken' ] ) ) ? absint( $ttfmake_section_data[ 'darken' ] ) : 0;
-$captions = ( isset( $ttfmake_section_data[ 'captions' ] ) ) ? esc_attr( $ttfmake_section_data[ 'captions' ] ) : 'reveal';
-$aspect   = ( isset( $ttfmake_section_data[ 'aspect' ] ) ) ? esc_attr( $ttfmake_section_data[ 'aspect' ] ) : 'square';
+global $post;
+
+$gallery  = $section_data['gallery-items'];
+$darken   = ( isset( $section_data[ 'darken' ] ) ) ? absint( $section_data[ 'darken' ] ) : 0;
+$captions = ( isset( $section_data[ 'captions' ] ) ) ? esc_attr( $section_data[ 'captions' ] ) : 'reveal';
+$aspect   = ( isset( $section_data[ 'aspect' ] ) ) ? esc_attr( $section_data[ 'aspect' ] ) : 'square';
 ?>
 
-<section id="<?php echo esc_attr( ttfmake_get_builder_save()->section_html_id( $ttfmake_section_data ) ); ?>" class="builder-section<?php echo esc_attr( ttfmake_builder_get_gallery_class( $ttfmake_section_data, $ttfmake_sections ) ); ?>" style="<?php echo ttfmake_builder_get_gallery_style( $ttfmake_section_data ); ?>">
-	<?php if ( '' !== $ttfmake_section_data['title'] ) : ?>
+<section id="<?php echo esc_attr( Make()->section()->get_html_id( $section_data ) ); ?>" class="builder-section<?php echo esc_attr( Make()->section()->get_html_class( $section_data ) ); ?>" style="<?php echo Make()->section()->get_section_styles( $section_data ); ?>">
+	<?php if ( '' !== $section_data['title'] ) : ?>
 	<h3 class="builder-gallery-section-title">
-		<?php echo apply_filters( 'the_title', $ttfmake_section_data['title'] ); ?>
+		<?php echo apply_filters( 'the_title', $section_data['title'] ); ?>
 	</h3>
 	<?php endif; ?>
 	<div class="builder-section-content">
 		<?php if ( ! empty( $gallery ) ) : $i = 0; foreach ( $gallery as $item ) : $i++; ?>
-		<div class="builder-gallery-item<?php echo esc_attr( ttfmake_builder_get_gallery_item_class( $item, $ttfmake_section_data, $i ) ); ?>"<?php echo ttfmake_builder_get_gallery_item_onclick( $item['link'], $ttfmake_section_data, $i ); ?>>
-			<?php $image = ttfmake_builder_get_gallery_item_image( $item, $aspect ); ?>
+		<div class="builder-gallery-item<?php echo esc_attr( Make()->section()->get_gallery_item_class( $item, $section_data, $i ) ); ?>"<?php echo Make()->section()->get_gallery_item_onclick( $item['link'], $section_data, $i ); ?>>
+			<?php $image = Make()->section()->get_gallery_item_image( $item, $aspect, $section_data ); ?>
 			<?php if ( '' !== $image ) : ?>
 				<?php echo $image; ?>
 			<?php endif; ?>
@@ -33,7 +34,7 @@ $aspect   = ( isset( $ttfmake_section_data[ 'aspect' ] ) ) ? esc_attr( $ttfmake_
 					<?php endif; ?>
 					<?php if ( '' !== $item['description'] ) : ?>
 					<div class="builder-gallery-description">
-						<?php ttfmake_get_builder_save()->the_builder_content( $item['description'] ); ?>
+						<?php Make()->section()->get_content( $item['description'] ); ?>
 					</div>
 					<?php elseif ( has_excerpt( $item['background-image'] ) ) : ?>
 					<div class="builder-gallery-description">
