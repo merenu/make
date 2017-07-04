@@ -480,13 +480,7 @@ class TTFMAKE_Builder_Base {
 		<?php endif; ?>
 
 		<textarea id="<?php echo esc_attr( $textarea_id ); ?>" name="<?php echo esc_attr( $textarea_attr_name ); ?>" data-model-attr="<?php echo esc_attr( $textarea_name ); ?>" style="display:none;">{{ data.get('<?php echo esc_attr( $textarea_name ); ?>')<?php echo $textarea_name_path; ?> }}</textarea>
-
-		<?php if ( true !== $ttfmake_is_js_template && true === $iframe ) : ?>
-		<script type="text/javascript">
-			var ttfMakeFrames = ttfMakeFrames || [];
-			ttfMakeFrames.push('<?php echo $id; ?>');
-		</script>
-		<?php endif;
+		<?php
 	}
 
 	/**
