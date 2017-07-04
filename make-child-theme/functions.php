@@ -52,12 +52,10 @@ add_action( 'wp_enqueue_scripts', 'childtheme_style_version', 20 );
  */
 $include_folder = get_stylesheet_directory();
 
-require_once ( "$include_folder/section_overlay.php" );
 require_once ( "$include_folder/section_instances.php" );
 
 function make_api_loaded( $Make ) {
     if ( is_admin() ) {
-        ttfmake_get_section_overlay()->hook();
         ttfmake_get_section_instances()->hook();
     }
 }
