@@ -58,6 +58,9 @@ class TTFMAKE_Builder_Save {
 
 			// Combine the input into the post's content
 			add_filter( 'wp_insert_post_data', array( $this, 'wp_insert_post_data' ), 30, 2 );
+
+			// Write sections to new layout format
+			add_action( 'make_builder_data_saved', array( $this, 'save_layout' ), 10, 2 );
 		}
 	}
 
@@ -185,6 +188,47 @@ class TTFMAKE_Builder_Save {
 
 		// Remove the old section values if necessary
 		$this->prune_abandoned_rows( $post_id, $values_to_save );
+	}
+
+	public function save_layout( $sections, $post_id ) {
+		// Remove legacy layout field
+		delete_post_meta( $post_id, '_ttfmake-section-ids' );
+
+		// Remove legacy section metas
+		$post_meta = get_post_meta( $post_id );
+		foreach ( $post_meta as $key => $value ) {
+			if ( 0 === strpos( $key, '_ttfmake:' ) ) {
+				delete_post_meta( $post_id, $key );
+			}
+		}
+
+		$layout = array();
+
+		foreach( $sections as $id => $section ) {
+			// Save new section metas
+			update_post_meta(
+				$post_id,
+				'_ttfmake_section_' . $section[ 'id' ],
+				wp_slash( json_encode( $section ) )
+			);
+
+			$layout[] = $section[ 'id' ];
+		}
+
+		// Purge removed sections
+		$current_layout_meta = get_post_meta( $post_id, '_ttfmake_layout', true );
+
+		if ( $current_layout_meta ) {
+			$current_layout = json_decode( wp_unslash( $current_layout_meta ), true );
+			$removed_section_ids = array_diff( $current_layout, $layout );
+
+			foreach ( $removed_section_ids as $section_id ) {
+				delete_post_meta( $post_id, "_ttfmake_section_{$section_id}" );
+			}
+		}
+
+		// Update layout
+		update_post_meta( $post_id, '_ttfmake_layout', wp_slash( json_encode( $layout ) ) );
 	}
 
 	/**
