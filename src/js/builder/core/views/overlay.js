@@ -107,7 +107,7 @@
 		},
 
 		onKeyDown: function( e ) {
-			if ( 27 == e.keyCode ) {
+			if ( 27 === e.keyCode ) {
 				e.preventDefault();
 				e.stopPropagation();
 
@@ -392,7 +392,7 @@
 		},
 
 		onKeyDown: function( e ) {
-			if (27 == e.keyCode) {
+			if ( 27 === e.keyCode ) {
 				e.preventDefault();
 				e.stopPropagation();
 
