@@ -8,7 +8,7 @@
 		},
 
 		initialize: function( attrs ) {
-			this.set( 'items', attrs['gallery-items'] );
+			this.items = attrs['gallery-items'];
 			this.set( 'gallery-items', new Backbone.Collection() );
 		},
 	} );
@@ -45,7 +45,7 @@
 			this.listenTo( this.itemViews, 'remove', this.onItemViewRemoved );
 			this.listenTo( this.itemViews, 'reset', this.onItemViewsSorted );
 
-			var items = this.model.get( 'items' ) || _.times( 3, _.constant( sectionData.defaults['gallery-item'] ) );
+			var items = this.model.items || _.times( 3, _.constant( sectionData.defaults['gallery-item'] ) );
 			var itemCollection = this.model.get( 'gallery-items' );
 
 			_.each( items, function( itemAttrs ) {
@@ -88,7 +88,13 @@
 			var itemViewIndex = this.itemViews.indexOf( itemViewModel );
 			var $itemViewEl = itemViewModel.get( 'view' ).render().$el;
 
-			$( '.ttfmake-gallery-items-stage', this.$el ).append( $itemViewEl );
+			if ( 0 === itemViewIndex ) {
+				$( '.ttfmake-gallery-items-stage', this.$el ).prepend( $itemViewEl );
+			} else {
+				var previousItemViewModel = this.itemViews.at( itemViewIndex - 1 );
+				previousItemViewModel.get( 'view' ).$el.after( $itemViewEl );
+			}
+
 			itemViewModel.get( 'view' ).trigger( 'rendered' );
 		},
 

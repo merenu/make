@@ -8,7 +8,7 @@
 		},
 
 		initialize: function( attrs ) {
-			this.set( 'items', attrs['banner-slides'] );
+			this.items = attrs['banner-slides'];
 			this.set( 'banner-slides', new Backbone.Collection() );
 		},
 	} );
@@ -44,7 +44,7 @@
 			this.listenTo( this.itemViews, 'remove', this.onItemViewRemoved );
 			this.listenTo( this.itemViews, 'reset', this.onItemViewsSorted );
 
-			var items = this.model.get( 'items' ) || [ sectionData.defaults['banner-slide'] ];
+			var items = this.model.items || [ sectionData.defaults['banner-slide'] ];
 			var itemCollection = this.model.get( 'banner-slides' );
 
 			_.each( items, function( itemAttrs ) {
@@ -87,7 +87,13 @@
 			var itemViewIndex = this.itemViews.indexOf( itemViewModel );
 			var $itemViewEl = itemViewModel.get( 'view' ).render().$el;
 
-			$( '.ttfmake-banner-slides-stage', this.$el ).append( $itemViewEl );
+			if ( 0 === itemViewIndex ) {
+				$( '.ttfmake-banner-slides-stage', this.$el ).prepend( $itemViewEl );
+			} else {
+				var previousItemViewModel = this.itemViews.at( itemViewIndex - 1 );
+				previousItemViewModel.get( 'view' ).$el.after( $itemViewEl );
+			}
+
 			itemViewModel.get( 'view' ).trigger( 'rendered' );
 		},
 
