@@ -95,7 +95,7 @@
 		onSectionCollectionChanged: function( sectionModel ) {
 			var jsonTextarea = $( '#ttfmake-sections-json' );
 			jsonTextarea.val( JSON.stringify( this.collection.toJSON() ) );
-			// console.log( jsonTextarea.val() );
+			console.log( jsonTextarea.val() );
 		},
 
 		onSectionModelsSorted: function( sectionCollection ) {
@@ -308,13 +308,13 @@
 		toggleConfigureDropdown: function() {
 			$( '.configure-item-dropdown' ).hide();
 			$( '.ttfmake-configure-item-button' ).removeClass( 'active' );
-			var $cogLink = $( '.ttfmake-configure-item-button', this.$el );
+			var $cogLink = $( '.ttfmake-configure-item-button', this.$el ).first();
 
 			if ( ! $cogLink.hasClass( 'ttfmake-configure-item-button' ) ) {
 				return;
 			}
 
-			var $configureItemDropdown = $( '.configure-item-dropdown', this.$el );
+			var $configureItemDropdown = $( '.configure-item-dropdown', this.$el ).first();
 			$cogLink.toggleClass( 'active' );
 			$configureItemDropdown.toggle();
 		},
