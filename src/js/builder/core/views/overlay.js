@@ -23,6 +23,7 @@
 			// this.model is the section origin model
 			// and is set automatically through
 			// the options parameter
+			this.buttonLabel = options.buttonLabel;
 			this.changeset = new Backbone.Model();
 			this.$editor = $( '#wp-make_content_editor-wrap' );
 			this.$textarea = $( '#make_content_editor' );
@@ -34,6 +35,10 @@
 
 		render: function() {
 			this.setElement( document.getElementById( 'ttfmake-tinymce-overlay' ) );
+
+			if ( this.buttonLabel ) {
+				$( '.ttfmake-overlay-close-update', this.$el ).text( this.buttonLabel );
+			}
 
 			return this;
 		},
@@ -260,6 +265,7 @@
 		className: 'ttfmake-overlay ttfmake-configuration-overlay',
 		id: 'ttfmake-overlay-configuration',
 		title: 'Configure section',
+		buttonLabel: 'Update changes',
 
 		events: {
 			'click .ttfmake-overlay-close-update': 'onUpdate',
@@ -271,6 +277,8 @@
 			// this.model is the section origin model
 			// and is set automatically through
 			// the options parameter
+			this.title = options.title || this.title;
+			this.buttonLabel = options.buttonLabel || this.buttonLabel;
 			this.settings = settings;
 			this.changeset = new Backbone.Model();
 			this.controls = {};
@@ -597,6 +605,16 @@
 		getValue: function() {
 			var $input = $( 'input', this.$el );
 			return $input.is( ':checked' ) ? 1: 0;
+		},
+
+		settingUpdated: function() {
+			if ( 1 === this.getValue() ) {
+				this.$el.addClass( 'checked' );
+			} else {
+				this.$el.removeClass( 'checked' );
+			}
+
+			window.make.classes.configuration.control.prototype.apply( this, arguments );
 		},
 
 		enable: function() {

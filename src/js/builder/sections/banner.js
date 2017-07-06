@@ -25,6 +25,7 @@
 		template: wp.template( 'ttfmake-section-banner' ),
 
 		events: _.extend( {}, make.classes.SectionView.prototype.events, {
+			'click .ttfmake-section-configure': 'onConfigureSectionClick',
 			'click .ttfmake-add-slide': 'onAddSlideClick',
 		} ),
 
@@ -159,6 +160,21 @@
 			this.model.get( 'banner-slides' ).add( itemModel );
 		},
 
+		onConfigureSectionClick: function( e ) {
+			e.preventDefault();
+
+			var sectionType = this.model.get( 'section-type' );
+			var sectionSettings = sectionData.settings[ sectionType ];
+
+			if ( sectionSettings ) {
+				window.make.overlay = new window.make.overlays.configuration( {
+					model: this.model,
+					buttonLabel: 'Update banner settings'
+				}, sectionSettings );
+				window.make.overlay.open();
+			}
+		},
+
 	} );
 
 	var ItemView = make.classes.SectionItemView.extend( {
@@ -206,7 +222,11 @@
 			var sectionSettings = sectionData.settings[ sectionType ];
 
 			if ( sectionSettings ) {
-				window.make.overlay = new window.make.overlays.configuration( { model: this.model }, sectionSettings );
+				window.make.overlay = new window.make.overlays.configuration( {
+					model: this.model,
+					title: 'Configure slide',
+					buttonLabel: 'Update slide'
+				}, sectionSettings );
 				window.make.overlay.open();
 			}
 		},

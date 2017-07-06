@@ -25,6 +25,7 @@
 		template: wp.template( 'ttfmake-section-gallery' ),
 
 		events: _.extend( {}, make.classes.SectionView.prototype.events, {
+			'click .ttfmake-section-configure': 'onConfigureSectionClick',
 			'click .ttfmake-gallery-add-item-link': 'onAddItemClick',
 		} ),
 
@@ -157,6 +158,21 @@
 			itemModel.parentModel = this.model;
 			this.model.get( 'gallery-items' ).add( itemModel );
 		},
+
+		onConfigureSectionClick: function( e ) {
+			e.preventDefault();
+
+			var sectionType = this.model.get( 'section-type' );
+			var sectionSettings = sectionData.settings[ sectionType ];
+
+			if ( sectionSettings ) {
+				window.make.overlay = new window.make.overlays.configuration( {
+					model: this.model,
+					buttonLabel: 'Update gallery settings'
+				}, sectionSettings );
+				window.make.overlay.open();
+			}
+		},
 	} );
 
 	var ItemView = make.classes.SectionItemView.extend( {
@@ -201,7 +217,11 @@
 		onEditItemContentClick: function( e ) {
 			e.preventDefault();
 
-			window.make.overlay = new window.make.overlays.content( { model: this.model, field: 'description' } );
+			window.make.overlay = new window.make.overlays.content( {
+				model: this.model,
+				field: 'description',
+				buttonLabel: 'Update item'
+			} );
 			window.make.overlay.open();
 		},
 
@@ -225,7 +245,11 @@
 			var sectionSettings = sectionData.settings[ sectionType ];
 
 			if ( sectionSettings ) {
-				window.make.overlay = new window.make.overlays.configuration( { model: this.model }, sectionSettings );
+				window.make.overlay = new window.make.overlays.configuration( {
+					model: this.model,
+					title: 'Configure item',
+					buttonLabel: 'Update item',
+				}, sectionSettings );
 				window.make.overlay.open();
 			}
 		},

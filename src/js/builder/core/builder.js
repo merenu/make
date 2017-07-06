@@ -272,7 +272,6 @@
 	var SectionItemView = Backbone.View.extend( {
 		events: {
 			'click .ttfmake-configure-item-button': 'onConfigureDropdownClick',
-			'click .edit-content-link': 'onEditItemContentClick',
 		},
 
 		initialize: function() {
@@ -296,13 +295,6 @@
 			e.stopPropagation();
 
 			this.toggleConfigureDropdown();
-		},
-
-		onEditItemContentClick: function( e ) {
-			e.preventDefault();
-
-			window.make.overlay = new window.make.overlays.content( { model: this.model, field: 'content' } );
-			window.make.overlay.open();
 		},
 
 		toggleConfigureDropdown: function() {

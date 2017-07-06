@@ -581,9 +581,7 @@ class MAKE_Builder_Sections_Banner_Definition {
 		<script type="text/template" id="tmpl-ttfmake-section-banner">
 		<?php get_template_part( 'inc/builder/sections/banner/builder-template' ); ?>
 		</script>
-		<?php
-		set_query_var( 'ttfmake_section_data', $section_definitions[ 'banner-slide' ] );
-		?>
+		<?php set_query_var( 'ttfmake_section_data', array() ); ?>
 		<script type="text/template" id="tmpl-ttfmake-section-banner-slide">
 		<?php get_template_part( 'inc/builder/sections/banner/builder-template', 'slide' ); ?>
 		</script>

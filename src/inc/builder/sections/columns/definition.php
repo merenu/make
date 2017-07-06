@@ -38,8 +38,8 @@ class MAKE_Builder_Sections_Columns_Definition {
 		add_filter( 'make_section_choices', array( $this, 'section_choices' ), 10, 3 );
 		add_filter( 'make_sections_settings', array( $this, 'section_settings' ) );
 		add_filter( 'make_sections_defaults', array( $this, 'section_defaults' ) );
-		add_filter( 'make_get_section_json', array ( $this, 'get_section_json' ), 10, 1 );
-		add_filter( 'make_get_section_json', array ( $this, 'embed_column_images' ), 20, 1 );
+		add_filter( 'make_get_section_json', array( $this, 'get_section_json' ), 10, 1 );
+		add_filter( 'make_get_section_json', array( $this, 'embed_column_images' ), 20, 1 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 20 );
 		add_action( 'admin_footer', array( $this, 'print_templates' ) );
 
@@ -531,9 +531,7 @@ class MAKE_Builder_Sections_Columns_Definition {
 		<script type="text/template" id="tmpl-ttfmake-section-text">
 		<?php get_template_part( 'inc/builder/sections/columns/builder-template' ); ?>
 		</script>
-		<?php
-		set_query_var( 'ttfmake_section_data', $section_definitions[ 'text-item' ] );
-		?>
+		<?php set_query_var( 'ttfmake_section_data', array() ); ?>
 		<script type="text/template" id="tmpl-ttfmake-section-text-item">
 		<?php get_template_part( 'inc/builder/sections/columns/builder-template', 'column' ); ?>
 		</script>

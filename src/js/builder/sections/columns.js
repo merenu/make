@@ -25,6 +25,7 @@
 		template: wp.template( 'ttfmake-section-text' ),
 
 		events: _.extend( {}, make.classes.SectionView.prototype.events, {
+			'click .ttfmake-section-configure': 'onConfigureSectionClick',
 			'click .ttfmake-text-columns-add-column-link': 'onAddColumnClick',
 		} ),
 
@@ -185,6 +186,21 @@
 			itemModel.parentModel = this.model;
 			this.model.get( 'columns' ).add( itemModel );
 		},
+
+		onConfigureSectionClick: function( e ) {
+			e.preventDefault();
+
+			var sectionType = this.model.get( 'section-type' );
+			var sectionSettings = sectionData.settings[ sectionType ];
+
+			if ( sectionSettings ) {
+				window.make.overlay = new window.make.overlays.configuration( {
+					model: this.model,
+					buttonLabel: 'Update columns settings'
+				}, sectionSettings );
+				window.make.overlay.open();
+			}
+		},
 	} );
 
 	var ItemView = make.classes.SectionItemView.extend( {
@@ -210,10 +226,17 @@
 		},
 
 		onEditItemContentClick: function( e ) {
-			make.classes.SectionItemView.prototype.onEditItemContentClick.apply( this, arguments );
+			e.preventDefault();
 
 			var backgroundColor = this.model.parentModel.get( 'background-color' );
 			backgroundColor = '' !== backgroundColor ? backgroundColor : 'transparent';
+
+			window.make.overlay = new window.make.overlays.content( {
+				model: this.model,
+				field: 'content',
+				buttonLabel: 'Update column'
+			} );
+			window.make.overlay.open();
 			window.make.overlay.setStyle( { backgroundColor: backgroundColor } );
 		},
 

@@ -546,9 +546,7 @@ class MAKE_Builder_Sections_Gallery_Definition {
 		<script type="text/template" id="tmpl-ttfmake-section-gallery">
 		<?php get_template_part( 'inc/builder/sections/gallery/builder-template' ); ?>
 		</script>
-		<?php
-		set_query_var( 'ttfmake_section_data', $section_definitions[ 'gallery-item' ] );
-		?>
+		<?php set_query_var( 'ttfmake_section_data', array() ); ?>
 		<script type="text/template" id="tmpl-ttfmake-section-gallery-item">
 		<?php get_template_part( 'inc/builder/sections/gallery/builder-template', 'item' ); ?>
 		</script>

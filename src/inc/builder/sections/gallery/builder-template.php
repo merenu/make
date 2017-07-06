@@ -3,9 +3,9 @@
  * @package Make
  */
 
-ttfmake_load_section_header();
-
 global $ttfmake_section_data;
+
+ttfmake_load_section_header();
 ?>
 
 <div class="ttfmake-gallery-items">

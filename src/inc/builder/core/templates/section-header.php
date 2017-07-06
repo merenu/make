@@ -3,6 +3,11 @@
  * @package Make
  */
 
+$ttfmake_section_data = array(
+	'config' => isset( $ttfmake_section_data['config'] ) ? $ttfmake_section_data['config']: array(),
+	'label' => isset( $ttfmake_section_data['label'] ) ? $ttfmake_section_data['label']: '',
+);
+
 $links = array(
 	100 => array(
 		'href'  => '#',
@@ -43,7 +48,7 @@ $links = apply_filters( 'make_builder_section_links', $links );
 ksort( $links );
 ?>
 
-<div class="ttfmake-section{{ 'closed' === data.get('state') ? '' : ' ttfmake-section-open' }} ttfmake-section-{{ data.get('section-type') }}" id="ttfmake-section-{{ data.get('id') }}" data-id="{{ data.get('id') }}" data-section-type="{{ data.get('section-type') }}">
+<div class="ttfmake-section{{ 'closed' === data.get('state') ? '' : ' ttfmake-section-open' }} ttfmake-section-{{ data.get('section-type') }}" data-id="{{ data.get('id') }}" data-section-type="{{ data.get('section-type') }}">
 	<?php
 	/**
 	 * Execute code before the section header is displayed.
