@@ -294,7 +294,7 @@ class TTFMAKE_Builder_Base {
 
 		wp_enqueue_script(
 			'ttfmake-builder-overlay',
-			Make()->scripts()->get_js_directory_uri() . '/builder/core/views/overlay.js',
+			Make()->scripts()->get_js_directory_uri() . '/builder/core/overlay.js',
 			array( 'ttfmake-builder' ),
 			TTFMAKE_VERSION,
 			true
