@@ -60,13 +60,13 @@
 			this.on( 'sort-stop', this.onItemSortStop, this );
 		},
 
-		onItemModelAdded: function( itemModel, itemCollection ) {
+		onItemModelAdded: function( itemModel, itemCollection, options ) {
 			var itemView = make.factory.view( { model: itemModel } );
 
 			if ( itemView ) {
 				var itemIndex = itemCollection.indexOf( itemModel );
 				var itemViewModel = new Backbone.Model( { id: itemModel.id, view: itemView } );
-				this.itemViews.add( itemViewModel, { at: itemIndex } );
+				this.itemViews.add( itemViewModel, _.extend( options, { at: itemIndex } ) );
 			}
 		},
 
@@ -85,7 +85,7 @@
 			this.model.trigger( 'change' );
 		},
 
-		onItemViewAdded: function( itemViewModel, itemViewCollection ) {
+		onItemViewAdded: function( itemViewModel, itemViewCollection, options ) {
 			var itemViewIndex = this.itemViews.indexOf( itemViewModel );
 			var $itemViewEl = itemViewModel.get( 'view' ).render().$el;
 
@@ -97,6 +97,10 @@
 			}
 
 			itemViewModel.get( 'view' ).trigger( 'rendered' );
+
+			if ( options.scroll ) {
+				window.make.builder.scrollToView( itemViewModel.get( 'view' ) );
+			}
 		},
 
 		onItemViewRemoved: function( itemViewModel ) {
@@ -156,7 +160,7 @@
 
 			var itemModel = make.factory.model( sectionData.defaults['gallery-item'] );
 			itemModel.parentModel = this.model;
-			this.model.get( 'gallery-items' ).add( itemModel );
+			this.model.get( 'gallery-items' ).add( itemModel, { scroll: true } );
 		},
 
 		onConfigureSectionClick: function( e ) {

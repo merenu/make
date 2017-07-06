@@ -118,7 +118,7 @@
 			sectionViewModel.get( 'view' ).trigger( 'rendered' );
 
 			if ( options.scroll ) {
-				this.scrollToSectionView( sectionViewModel.get( 'view' ) )
+				this.scrollToView( sectionViewModel.get( 'view' ) )
 			}
 		},
 
@@ -159,10 +159,10 @@
 			}, this ) );
 		},
 
-		scrollToSectionView: function ( sectionView ) {
+		scrollToView: function ( view ) {
 			$( 'html, body' ).animate( {
 				// Offset + admin bar height + margin
-				scrollTop: sectionView.$el.offset().top - 32 - 9
+				scrollTop: view.$el.offset().top - 32 - 9
 			}, 800, 'easeOutQuad' );
 		},
 
