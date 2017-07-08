@@ -44,8 +44,8 @@ class MAKE_Section_Methods extends MAKE_Util_Modules implements MAKE_Section_Met
 		}
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_builder_scripts' ) );
-		add_action( 'make_builder_banner_css', array( $this, 'builder_banner_styles' ), 10, 3 );
 		add_action( 'make_style_loaded', array( $this, 'builder_styles' ) );
+		add_action( 'make_builder_banner_css', array( $this, 'builder_banner_styles' ), 10, 3 );
 
 		// Hooking has occurred.
 		self::$hooked = true;
@@ -117,8 +117,7 @@ class MAKE_Section_Methods extends MAKE_Util_Modules implements MAKE_Section_Met
 
 		if ( ! empty( $sections_meta ) ) {
 			foreach ( $sections_meta as $section ) {
-				$section_meta = get_metadata_by_mid( 'post', $section );
-				$section_data = json_decode( wp_unslash( $section_meta->meta_value ), true );
+				$section_data = json_decode( get_post_meta( get_the_ID(), '_ttfmake_section_' . $section, true ), true );
 
 				if ( isset( $section_data['master_id'] ) && !empty( $section_data['master_id'] ) ) {
 					$master_option = get_option( $section_data['master_id'] );
@@ -190,8 +189,8 @@ class MAKE_Section_Methods extends MAKE_Util_Modules implements MAKE_Section_Met
 	public function get_html_class( $section_data ) {
 		$section_type = $section_data['section-type'];
 
-		global $post;
-		$sections_meta = json_decode( wp_unslash( get_post_meta( $post->ID, '__ttfmake_layout', true ) ), true );
+		$sections_meta = json_decode( wp_unslash( get_post_meta( get_the_ID(), '_ttfmake_layout', true ) ), true );
+
 		$sections = $this->get_sections( $sections_meta );
 
 		$prefix = 'builder-section-';
@@ -558,7 +557,7 @@ class MAKE_Section_Methods extends MAKE_Util_Modules implements MAKE_Section_Met
 	 */
 	public function builder_styles( MAKE_Style_ManagerInterface $style ) {
 		if ( ttfmake_is_builder_page() ) {
-			$sections_meta = json_decode( wp_unslash( get_post_meta( get_the_ID(), '__ttfmake_layout', true ) ), true );
+			$sections_meta = json_decode( wp_unslash( get_post_meta( get_the_ID(), '_ttfmake_layout', true ) ), true );
 			$sections = $this->get_sections( $sections_meta );
 
 			if ( ! empty( $sections ) ) {
@@ -623,7 +622,7 @@ class MAKE_Section_Methods extends MAKE_Util_Modules implements MAKE_Section_Met
 
 	public function frontend_builder_scripts() {
 		if ( ttfmake_is_builder_page() ) {
-			$sections_meta = json_decode( wp_unslash( get_post_meta( get_the_ID(), '__ttfmake_layout', true ) ), true );
+			$sections_meta = json_decode( wp_unslash( get_post_meta( get_the_ID(), '_ttfmake_layout', true ) ), true );
 			$sections = $this->get_sections( $sections_meta );
 
 			// Bail if there are no sections
@@ -844,5 +843,96 @@ class MAKE_Section_Methods extends MAKE_Util_Modules implements MAKE_Section_Met
 		 * @param string   $section_type    The type of section this relates to.
 		 */
 		return apply_filters( 'make_section_choices', $choices, $key, $section_type );
+	}
+
+	/**
+	 * Retrieve all of the data for the sections.
+	 *
+	 * @since  1.2.0.
+	 *
+	 * @param  string    $post_id    The post to retrieve the data from.
+	 * @return array                 The combined data.
+	 */
+	public function get_section_data( $post_id ) {
+		$ordered_data = array();
+		$ids          = get_post_meta( $post_id, '_ttfmake-section-ids', true );
+		$ids          = ( ! empty( $ids ) && is_array( $ids ) ) ? array_map( 'strval', $ids ) : $ids;
+		$post_meta    = get_post_meta( $post_id );
+
+		// Temp array of hashed keys
+		$temp_data = array();
+
+		// Any meta containing the old keys should be deleted
+		if ( is_array( $post_meta ) ) {
+			foreach ( $post_meta as $key => $value ) {
+				// Only consider builder values
+				if ( 0 === strpos( $key, '_ttfmake:' ) ) {
+					// Get the individual pieces
+					$temp_data[ str_replace( '_ttfmake:', '', $key ) ] = $value[0];
+				}
+			}
+		}
+
+		// Create multidimensional array from postmeta
+		$data = $this->create_array_from_meta_keys( $temp_data );
+
+		// Reorder the data in the order specified by the section IDs
+		if ( is_array( $ids ) ) {
+			foreach ( $ids as $id ) {
+				if ( isset( $data[ $id ] ) ) {
+					$ordered_data[ $id ] = $data[ $id ];
+				}
+			}
+		}
+
+		/**
+		 * Filter the section data for a post.
+		 *
+		 * @since 1.2.3.
+		 *
+		 * @param array    $ordered_data    The array of section data.
+		 * @param int      $post_id         The post ID for the retrieved data.
+		 */
+		return apply_filters( 'make_get_section_data', $ordered_data, $post_id );
+	}
+
+	/**
+	 * Convert an array with array keys that map to a multidimensional array to the array.
+	 *
+	 * @since  1.2.0.
+	 *
+	 * @param  array    $arr    The array to convert.
+	 * @return array            The converted array.
+	 */
+	public function create_array_from_meta_keys( $arr ) {
+		// The new multidimensional array we will return
+		$result = array();
+
+		// Process each item of the input array
+		foreach ( $arr as $key => $value ) {
+			// Store a reference to the root of the array
+			$current = & $result;
+
+			// Split up the current item's key into its pieces
+			$pieces = explode( ':', $key );
+
+			/**
+			 * For all but the last piece of the key, create a new sub-array (if necessary), and update the $current
+			 * variable to a reference of that sub-array.
+			 */
+			for ( $i = 0; $i < count( $pieces ) - 1; $i++ ) {
+				$step = $pieces[ $i ];
+				if ( ! isset( $current[ $step ] ) ) {
+					$current[ $step ] = array();
+				}
+				$current = & $current[ $step ];
+			}
+
+			// Add the current value into the final nested sub-array
+			$current[ $pieces[ $i ] ] = $value;
+		}
+
+		// Return the result array
+		return $result;
 	}
 }
