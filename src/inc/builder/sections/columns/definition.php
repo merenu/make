@@ -431,7 +431,7 @@ class MAKE_Builder_Sections_Columns_Definition {
 		$clean_data['title'] = $clean_data['label'] = ( isset( $data['title'] ) ) ? apply_filters( 'title_save_pre', $data['title'] ) : '';
 
 		if ( isset( $data['columns-number'] ) ) {
-			$clean_data['columns-number'] = ttfmake_sanitize_section_choice( $data['columns-number'], 'columns-number', $data['section-type'] );
+			$clean_data['columns-number'] = Make()->section()->sanitize_section_choice( $data['columns-number'], 'columns-number', $data['section-type'] );
 		}
 
 		if ( isset( $data['background-image'] ) && '' !== $data['background-image'] ) {
@@ -441,7 +441,7 @@ class MAKE_Builder_Sections_Columns_Definition {
 		}
 
 		if ( isset( $data['background-position'] ) ) {
-			$clean_data['background-position'] = ttfmake_sanitize_section_choice( $data['background-position'], 'background-position', $data['section-type'] );
+			$clean_data['background-position'] = Make()->section()->sanitize_section_choice( $data['background-position'], 'background-position', $data['section-type'] );
 		}
 
 		if ( isset( $data['darken'] ) && $data['darken'] == 1 ) {
@@ -455,7 +455,7 @@ class MAKE_Builder_Sections_Columns_Definition {
 		}
 
 		if ( isset( $data['background-style'] ) ) {
-			$clean_data['background-style'] = ttfmake_sanitize_section_choice( $data['background-style'], 'background-style', $data['section-type'] );
+			$clean_data['background-style'] = Make()->section()->sanitize_section_choice( $data['background-style'], 'background-style', $data['section-type'] );
 		}
 
 		if ( isset( $data['full-width'] ) && $data['full-width'] == 1 ) {

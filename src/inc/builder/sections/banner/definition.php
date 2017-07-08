@@ -85,7 +85,7 @@ class MAKE_Builder_Sections_Banner_Definition {
 				'name'        => 'responsive',
 				'default' => Make()->section()->get_section_default( 'responsive', 'banner' ),
 				'description' => __( 'Choose how the Banner will respond to varying screen widths. Default is ideal for large amounts of written content, while Aspect is better for showing your images.', 'make' ),
-				'options'     => ttfmake_get_section_choices( 'responsive', 'banner' ),
+				'options'     => Make()->section()->get_section_choices( 'responsive', 'banner' ),
 			),
 			500 => array(
 				'type'  => 'divider',
@@ -106,7 +106,7 @@ class MAKE_Builder_Sections_Banner_Definition {
 				'label' => __( 'Position', 'make' ),
 				'class' => 'ttfmake-configuration-media-related',
 				'default' => Make()->section()->get_section_default( 'background-position', 'banner' ),
-				'options' => ttfmake_get_section_choices( 'background-position', 'banner' ),
+				'options' => Make()->section()->get_section_choices( 'background-position', 'banner' ),
 			),
 			800 => array(
 				'type'    => 'select',
@@ -114,7 +114,7 @@ class MAKE_Builder_Sections_Banner_Definition {
 				'label'   => __( 'Display', 'make' ),
 				'class'   => 'ttfmake-configuration-media-related',
 				'default' => Make()->section()->get_section_default( 'background-style', 'banner' ),
-				'options' => ttfmake_get_section_choices( 'background-style', 'banner' ),
+				'options' => Make()->section()->get_section_choices( 'background-style', 'banner' ),
 			),
 			900 => array(
 				'type'    => 'checkbox',
@@ -158,14 +158,14 @@ class MAKE_Builder_Sections_Banner_Definition {
 				'label'   => __( 'Speed', 'make' ),
 				'name'    => 'delay',
 				'default' => Make()->section()->get_section_default( 'delay', 'banner' ),
-				'options' => ttfmake_get_section_choices( 'delay', 'banner' )
+				'options' => Make()->section()->get_section_choices( 'delay', 'banner' )
 			),
 			1600 => array(
 				'type'    => 'select',
 				'label'   => __( 'Transition effect', 'make' ),
 				'name'    => 'transition',
 				'default' => Make()->section()->get_section_default( 'transition', 'banner' ),
-				'options' => ttfmake_get_section_choices( 'transition', 'banner' ),
+				'options' => Make()->section()->get_section_choices( 'transition', 'banner' ),
 			),
 		);
 	}
@@ -435,7 +435,7 @@ class MAKE_Builder_Sections_Banner_Definition {
 				 *
 				 * @since 1.8.8.
 				 */
-				 if( isset( $data['delay'] ) && !in_array( $data['delay'], ttfmake_get_section_choices( 'delay', 'banner' ) ) ) {
+				 if( isset( $data['delay'] ) && !in_array( $data['delay'], Make()->section()->get_section_choices( 'delay', 'banner' ) ) ) {
 					 $data['delay'] = Make()->section()->get_section_default( 'delay', 'banner' );
 				 }
 			}
