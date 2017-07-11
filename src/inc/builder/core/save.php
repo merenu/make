@@ -130,7 +130,7 @@ class TTFMAKE_Builder_Save {
 				 * @param string $section_type    The type of section being handled.
 				 */
 				$id = $section['id'];
-				$clean_sections[ $id ]['id'] = $id;
+				$clean_sections[ $id ]['id'] = strval( $id );
 				$clean_sections[ $id ]['state'] = ( isset( $section['state'] ) ) ? sanitize_key( $section['state'] ) : 'open';
 				$clean_sections[ $id ]['section-type'] = $section['section-type'];
 				$clean_sections[ $id ] = apply_filters( 'make_prepare_data_section', call_user_func_array( $registered_sections[ $section['section-type'] ]['save_callback'], array( $section ) ), $section, $section['section-type'] );
@@ -528,74 +528,6 @@ class TTFMAKE_Builder_Save {
 	 */
 	public function remove_image_constraints( $dimensions ) {
 		return array( 9999, 9999 );
-	}
-
-	/**
-	 * Get the next section's data.
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @param  array    $current_section    The current section's data.
-	 * @param  array    $sections           The list of sections.
-	 * @return array                        The next section's data.
-	 */
-	public function get_next_section_data( $current_section, $sections ) {
-		$next_is_the_one = false;
-		$next_data       = array();
-
-		foreach ( $sections as $id => $data ) {
-			if ( true === $next_is_the_one ) {
-				$next_data = $data;
-				break;
-			}
-
-			if ( $current_section['id'] == $id ) {
-				$next_is_the_one = true;
-			}
-		}
-
-		/**
-		 * Allow developers to alter the "next" section data.
-		 *
-		 * @since 1.2.3.
-		 *
-		 * @param array    $next_data          The data for the next section.
-		 * @param array    $current_section    The data for the current section.
-		 * @param array    $sections           The list of all sections.
-		 */
-		return apply_filters( 'make_get_next_section_data', $next_data, $current_section, $sections );
-	}
-
-	/**
-	 * Get the previous section's data.
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @param  array    $current_section    The current section's data.
-	 * @param  array    $sections           The list of sections.
-	 * @return array                        The previous section's data.
-	 */
-	public function get_prev_section_data( $current_section, $sections ) {
-		foreach ( $sections as $id => $data ) {
-			if ( $current_section['id'] == $id ) {
-				break;
-			} else {
-				$prev_key = $id;
-			}
-		}
-
-		$prev_section = ( isset( $prev_key ) && isset( $sections[ $prev_key ] ) ) ? $sections[ $prev_key ] : array();
-
-		/**
-		 * Allow developers to alter the "next" section data.
-		 *
-		 * @since 1.2.3.
-		 *
-		 * @param array    $prev_section       The data for the next section.
-		 * @param array    $current_section    The data for the current section.
-		 * @param array    $sections           The list of all sections.
-		 */
-		return apply_filters( 'make_get_prev_section_data', $prev_section, $current_section, $sections );
 	}
 
 	/**

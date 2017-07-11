@@ -231,7 +231,7 @@ class TTFMAKE_Builder_Base {
 			$ordered_sections = array();
 
 			foreach ( $section_order as $section_id ) {
-				array_push( $ordered_sections, $section_data[$section_id] );
+				array_push( $ordered_sections, $section_data[ strval( $section_id ) ] );
 			}
 
 			$section_data = $ordered_sections;
