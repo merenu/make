@@ -234,8 +234,8 @@ class MAKE_Section_Methods extends MAKE_Util_Modules implements MAKE_Section_Met
 		$this->sanitize_section_choice( $section_data['mode'], 'mode', $section_type ) :
 		$this->get_section_default( 'mode', $section_type );
 
-		if ( !empty( $mode ) ) {
-			$html_class .= ' ' . $mode . '-mode';
+		if ( $mode !== false && !empty( $mode ) ) {
+			//$html_class .= ' ' . $mode . '-mode';
 		}
 
 		switch( $section_type ) {
