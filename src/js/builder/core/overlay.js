@@ -614,7 +614,7 @@
 				this.$el.removeClass( 'checked' );
 			}
 
-			window.make.classes.configuration.control.prototype.apply( this, arguments );
+			window.make.classes.configuration.control.prototype.settingUpdated.apply( this, arguments );
 		},
 
 		enable: function() {
