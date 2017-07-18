@@ -232,15 +232,15 @@
 		onEditItemContentClick: function( e ) {
 			e.preventDefault();
 
-			var backgroundColor = this.model.parentModel.get( 'background-color' );
-			backgroundColor = '' !== backgroundColor ? backgroundColor : 'transparent';
-
 			window.make.overlay = new window.make.overlays.content( {
 				model: this.model,
 				field: 'content',
 				buttonLabel: 'Update column'
 			} );
 			window.make.overlay.open();
+
+			var backgroundColor = this.model.parentModel.get( 'background-color' );
+			backgroundColor = '' !== backgroundColor ? backgroundColor : 'transparent';
 			window.make.overlay.setStyle( { backgroundColor: backgroundColor } );
 		},
 

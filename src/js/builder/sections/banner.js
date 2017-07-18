@@ -187,6 +187,7 @@
 		events: _.extend( {}, make.classes.SectionItemView.prototype.events, {
 			'click .ttfmake-banner-slide-remove': 'onRemoveSlideClick',
 			'click .ttfmake-banner-slide-configure': 'onConfigureSlideClick',
+			'click .edit-content-link': 'onEditSlideContentClick',
 			'click .ttfmake-media-uploader-placeholder': 'onUploaderSlideClick'
 		} ),
 
@@ -233,6 +234,21 @@
 				}, sectionSettings );
 				window.make.overlay.open();
 			}
+		},
+
+		onEditSlideContentClick: function( e ) {
+			e.preventDefault();
+
+			window.make.overlay = new window.make.overlays.content( {
+				model: this.model,
+				field: 'content',
+				buttonLabel: 'Update slide'
+			} );
+			window.make.overlay.open();
+
+			var backgroundColor = this.model.parentModel.get( 'background-color' );
+			backgroundColor = '' !== backgroundColor ? backgroundColor : 'transparent';
+			window.make.overlay.setStyle( { backgroundColor: backgroundColor } );
 		},
 
 		onUploaderSlideClick: function( e ) {
