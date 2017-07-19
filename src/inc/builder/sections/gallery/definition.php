@@ -469,7 +469,10 @@ class MAKE_Builder_Sections_Gallery_Definition {
 				// Handle legacy data layout
 				$id = isset( $item['id'] ) ? $item['id']: $i;
 
-				$clean_item_data = array( 'id' => $id );
+				$clean_item_data = array(
+					'id' => $id,
+					'section-type' => $item['section-type'],
+				);
 
 				if ( isset( $item['title'] ) ) {
 					$clean_item_data['title'] = apply_filters( 'title_save_pre', $item['title'] );
@@ -491,6 +494,12 @@ class MAKE_Builder_Sections_Gallery_Definition {
 					$clean_item_data['background-image'] = ttfmake_sanitize_image_id( $item['background-image'] );
 				} else {
 					$clean_item_data['background-image'] = '';
+				}
+
+				if ( isset( $item['background-image-url'] ) && '' !== $item['background-image-url'] ) {
+					$clean_item_data['background-image-url'] = $item['background-image-url'];
+				} else {
+					$clean_item_data['background-image-url'] = '';
 				}
 
 				if ( isset( $item['open-new-tab'] ) && $item['open-new-tab'] == 1 ) {

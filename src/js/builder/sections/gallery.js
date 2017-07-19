@@ -9,7 +9,7 @@
 
 		initialize: function( attrs ) {
 			this.items = attrs['gallery-items'];
-			this.set( 'gallery-items', new Backbone.Collection() );
+			this.set( 'gallery-items', new Backbone.Collection(), { silent: true } );
 		},
 	} );
 
