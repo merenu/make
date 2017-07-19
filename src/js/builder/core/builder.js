@@ -95,7 +95,7 @@
 		onSectionCollectionChanged: function( sectionModel ) {
 			var jsonTextarea = $( '#ttfmake-sections-json' );
 			jsonTextarea.val( JSON.stringify( this.collection.toJSON() ) );
-			console.log( jsonTextarea.val() );
+			// console.log( jsonTextarea.val() );
 		},
 
 		onSectionModelsSorted: function( sectionCollection ) {
