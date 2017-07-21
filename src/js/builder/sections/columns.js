@@ -9,7 +9,7 @@
 
 		initialize: function( attrs ) {
 			this.items = attrs.columns;
-			this.set( 'columns', new Backbone.Collection() );
+			this.set( 'columns', new Backbone.Collection(), { silent: true } );
 		},
 	} );
 

@@ -234,7 +234,7 @@ class MAKE_Builder_Sections_Columns_Definition {
 	 *
 	 * @return array
 	 */
-	public function get_column_defaults() {
+	public function get_item_defaults() {
 		return array(
 			'section-type' => 'text-item',
 			'content' => '',
@@ -257,7 +257,7 @@ class MAKE_Builder_Sections_Columns_Definition {
 	 */
 	public function section_defaults( $defaults ) {
 		$defaults['text'] = $this->get_defaults();
-		$defaults['text-item'] = $this->get_column_defaults();
+		$defaults['text-item'] = $this->get_item_defaults();
 
 		return $defaults;
 	}
@@ -321,7 +321,7 @@ class MAKE_Builder_Sections_Columns_Definition {
 						$column_image_id_set = true;
 					}
 
-					$column = wp_parse_args( $column, $this->get_column_defaults() );
+					$column = wp_parse_args( $column, $this->get_item_defaults() );
 
 					// Handle legacy data layout
 					$id = isset( $column['id'] ) ? $column['id']: $s;
@@ -465,26 +465,47 @@ class MAKE_Builder_Sections_Columns_Definition {
 		}
 
 		if ( isset( $data['columns'] ) && is_array( $data['columns'] ) ) {
-			foreach ( $data['columns'] as $id => $item ) {
-				if ( isset( $item['id'] ) ) {
-					$clean_data['columns'][ $id ]['id'] = $item['id'];
-				}
+			$clean_data['columns'] = array();
 
-				if ( isset( $item['parentID'] ) ) {
-					$clean_data['columns'][ $id ]['parentID'] = $item['parentID'];
-				}
+			foreach ( $data['columns'] as $i => $item ) {
+				$item = wp_parse_args( $item, $this->get_item_defaults() );
+
+				$id = isset( $item['id'] ) ? $item['id'] : $i;
+
+				$clean_item_data = array(
+					'id' => $id,
+					'section-type' => $item['section-type']
+				);
 
 				if ( isset( $item['content'] ) ) {
-					$clean_data['columns'][ $id ]['content'] = sanitize_post_field( 'post_content', $item['content'], ( get_post() ) ? get_the_ID() : 0, 'db' );
+					$clean_item_data['content'] = sanitize_post_field( 'post_content', $item['content'], ( get_post() ) ? get_the_ID() : 0, 'db' );
 				}
 
 				if ( isset( $item['size'] ) ) {
-					$clean_data['columns'][ $id ]['size'] = esc_attr( $item['size'] );
+					$clean_item_data['size'] = esc_attr( $item['size'] );
 				}
 
 				if ( isset( $item['sidebar-label'] ) ) {
-					$clean_data['columns'][ $id ]['sidebar-label'] = $item['sidebar-label'];
+					$clean_item_data['sidebar-label'] = $item['sidebar-label'];
 				}
+
+				if ( isset( $item['background-image'] ) ) {
+					$clean_item_data['background-image'] = ttfmake_sanitize_image_id( $item['background-image'] );
+				}
+
+				if ( isset( $item['background-image'] ) && '' !== $item['background-image'] ) {
+					$clean_item_data['background-image'] = ttfmake_sanitize_image_id( $item['background-image'] );
+				} else {
+					$clean_item_data['background-image'] = '';
+				}
+
+				if ( isset( $item['background-image-url'] ) && '' !== $item['background-image-url'] ) {
+					$clean_item_data['background-image-url'] = $item['background-image-url'];
+				} else {
+					$clean_item_data['background-image-url'] = '';
+				}
+
+				array_push( $clean_data['columns'], $clean_item_data );
 			}
 		}
 
