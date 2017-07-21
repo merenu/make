@@ -220,11 +220,7 @@
 
 		onRemoveClick: function( e ) {
 			e.preventDefault();
-
-			this.changeset.set( this.field, '' );
-			this.changeset.set( this.field + '-url', '' );
-			this.model.set( this.changeset.toJSON() );
-			this.remove();
+			this.onRemove();
 		},
 
 		onSelect: function() {
@@ -238,6 +234,13 @@
 				this.changeset.clear();
 			}
 
+			this.model.set( this.changeset.toJSON() );
+			this.remove();
+		},
+
+		onRemove: function() {
+			this.changeset.set( this.field, '' );
+			this.changeset.set( this.field + '-url', '' );
 			this.model.set( this.changeset.toJSON() );
 			this.remove();
 		},
