@@ -510,7 +510,10 @@ class MAKE_Builder_Sections_Banner_Definition {
 				// Handle legacy data layout
 				$id = isset( $slide['id'] ) ? $slide['id']: $s;
 
-				$clean_slide_data = array( 'id' => $id );
+				$clean_slide_data = array(
+					'id' => $id,
+					'section-type' => $slide['section-type']
+				);
 
 				if ( isset( $slide['content'] ) ) {
 					$clean_slide_data['content'] = sanitize_post_field( 'post_content', $slide['content'], ( get_post() ) ? get_the_ID() : 0, 'db' );
@@ -526,6 +529,12 @@ class MAKE_Builder_Sections_Banner_Definition {
 					$clean_slide_data['background-image'] = ttfmake_sanitize_image_id( $slide['background-image'] );
 				} else {
 					$clean_slide_data['background-image'] = '';
+				}
+
+				if ( isset( $slide['background-image-url'] ) && '' !== $slide['background-image-url'] ) {
+					$clean_slide_data['background-image-url'] = $clean_slide_data['background-image-url'];
+				} else {
+					$clean_slide_data['background-image-url'] = '';
 				}
 
 				$clean_slide_data['alignment'] = ( isset( $slide['alignment'] ) && in_array( $slide['alignment'], array( 'none', 'left', 'right' ) ) ) ? $slide['alignment'] : 'none';

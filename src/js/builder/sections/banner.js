@@ -9,7 +9,7 @@
 
 		initialize: function( attrs ) {
 			this.items = attrs['banner-slides'];
-			this.set( 'banner-slides', new Backbone.Collection() );
+			this.set( 'banner-slides', new Backbone.Collection(), { silent: true } );
 		},
 	} );
 
