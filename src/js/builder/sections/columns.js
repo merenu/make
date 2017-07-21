@@ -26,7 +26,7 @@
 
 		events: _.extend( {}, make.classes.SectionView.prototype.events, {
 			'click .ttfmake-section-configure': 'onConfigureSectionClick',
-			'click .ttfmake-text-columns-add-column-link': 'onAddColumnClick',
+			'click .ttfmake-text-columns-add-column-link': 'onAddItemClick',
 		} ),
 
 		initialize: function() {
@@ -183,7 +183,7 @@
 			}, this ) );
 		},
 
-		onAddColumnClick: function( e ) {
+		onAddItemClick: function( e ) {
 			e.preventDefault();
 
 			var itemModel = make.factory.model( sectionData.defaults['text-item'] );
