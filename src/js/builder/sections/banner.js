@@ -26,7 +26,7 @@
 
 		events: _.extend( {}, make.classes.SectionView.prototype.events, {
 			'click .ttfmake-section-configure': 'onConfigureSectionClick',
-			'click .ttfmake-add-slide': 'onAddSlideClick',
+			'click .ttfmake-add-slide': 'onAddItemClick',
 		} ),
 
 		initialize: function() {
@@ -156,7 +156,7 @@
 			}, this ) );
 		},
 
-		onAddSlideClick: function( e ) {
+		onAddItemClick: function( e ) {
 			e.preventDefault();
 
 			var itemModel = make.factory.model( sectionData.defaults['banner-slide'] );
@@ -185,7 +185,7 @@
 		template: wp.template( 'ttfmake-section-banner-slide' ),
 
 		events: _.extend( {}, make.classes.SectionItemView.prototype.events, {
-			'click .ttfmake-banner-slide-remove': 'onRemoveSlideClick',
+			'click .ttfmake-banner-slide-remove': 'onRemoveItemClick',
 			'click .ttfmake-banner-slide-configure': 'onConfigureSlideClick',
 			'click .edit-content-link': 'onEditSlideContentClick',
 			'click .ttfmake-media-uploader-placeholder': 'onUploaderSlideClick'
@@ -197,7 +197,7 @@
 			this.listenTo( this.model, 'change:background-image-url', this.onItemBackgroundChanged );
 		},
 
-		onRemoveSlideClick: function( e ) {
+		onRemoveItemClick: function( e ) {
 			e.preventDefault();
 
 			if ( ! confirm( 'Are you sure you want to trash this slide permanently?' ) ) {
