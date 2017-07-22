@@ -240,6 +240,7 @@ class MAKE_Builder_Sections_Columns_Definition {
 			'content' => '',
 			'sidebar-label' => '',
 			'widget-area-id' => '',
+			'widget-area' => '',
 			'widgets' => ''
 		);
 	}
