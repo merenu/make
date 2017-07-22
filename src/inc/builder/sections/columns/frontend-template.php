@@ -21,9 +21,10 @@
 				<div class="builder-text-row">
 			<?php endif; ?>
 			<div class="builder-text-column builder-text-column-<?php echo $i; ?>" id="builder-section-<?php echo esc_attr( $section_data['id'] ); ?>-column-<?php echo $i; ?>">
-				<?php if ( '' !== $column['content'] ) : ?>
+				<?php $content = apply_filters( 'make_filter_column_content', $column['content'], $column ); ?>
+				<?php if ( '' !== $content ) : ?>
 				<div class="builder-text-content">
-					<?php Make()->section()->get_content( $column['content'] ); ?>
+					<?php Make()->section()->get_content( $content ); ?>
 				</div>
 				<?php endif; ?>
 			</div>
