@@ -45,7 +45,7 @@ class MAKE_Builder_Sections_Columns_Definition {
 
 		ttfmake_add_section(
 			'text',
-			__( 'Columns', 'make' ),
+			__( 'Content', 'make' ),
 			Make()->scripts()->get_css_directory_uri() . '/builder/sections/images/text.png',
 			__( 'Create rearrangeable columns of content and images.', 'make' ),
 			array( $this, 'save' ),
