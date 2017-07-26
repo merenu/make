@@ -61,12 +61,12 @@ ksort( $links );
 		<h3{{ (data.get('title')) ? ' class=has-title' : '' }}>
 			<span class="ttfmake-section-header-title">{{ data.get('title') }}</span><em><?php echo ( esc_html( $ttfmake_section_data['label'] ) ); ?></em>
 
-			<span class="ttfmake-section-indicator ttfmake-section-indicator--draft">
-				<span class="ttfmake-section-indicator-inner"><?php echo __( 'Draft', 'make' ); ?></span>
+			<span class="ttfmake-section-badge ttfmake-section-badge--draft" style="display: {{ (parseInt(data.get('draft'), 10) === 1) ? 'inline-block' : 'none' }}">
+				<span class="ttfmake-section-badge-inner"><?php echo __( 'Draft', 'make' ); ?></span>
 			</span>
 
-			<span class="ttfmake-section-indicator ttfmake-section-indicator--master">
-				<span class="ttfmake-section-indicator-inner"><?php echo __( 'Master', 'make' ); ?></span>
+			<span class="ttfmake-section-badge ttfmake-section-badge--master" style="display: {{ (parseInt(data.get('master'), 10) === 1) ? 'inline-block' : 'none' }}">
+				<span class="ttfmake-section-badge-inner"><?php echo __( 'Master', 'make' ); ?></span>
 			</span>
 		</h3>
 		<div class="ttf-make-section-header-button-wrapper">

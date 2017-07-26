@@ -261,25 +261,22 @@
 	padding-left: 10px;
 	padding-right: 12px;
 }
-.ttfmake-section .ttfmake-section-indicator {
+.ttfmake-section .ttfmake-section-badge {
 	display: none;
 	position: relative;
 	margin-left: 10px;
 }
-.ttfmake-section .ttfmake-section-indicator-inner {
+.ttfmake-section .ttfmake-section-badge-inner {
 	padding: 3px 10px;
 	font-weight: 600;
 	border-radius: 25px;
 	color: #fff;
 }
-.ttfmake-section .ttfmake-section-indicator--draft .ttfmake-section-indicator-inner {
+.ttfmake-section .ttfmake-section-badge--draft .ttfmake-section-badge-inner {
 	background-color: #d54e21;
 }
-.ttfmake-section .ttfmake-section-indicator--master .ttfmake-section-indicator-inner {
+.ttfmake-section .ttfmake-section-badge--master .ttfmake-section-badge-inner {
 	background-color: #0073aa;
-}
-.ttfmp-section-master .ttfmake-section-indicator--master {
-	display: inline-block;
 }
 .ttfmake-section h4 {
 	margin: 20px 0 10px;
