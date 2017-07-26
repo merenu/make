@@ -261,16 +261,25 @@
 	padding-left: 10px;
 	padding-right: 12px;
 }
-.ttfmake-section .ttfmake-section-draft-indicator {
+.ttfmake-section .ttfmake-section-indicator {
+	display: none;
 	position: relative;
 	margin-left: 10px;
 }
-.ttfmake-section .ttfmake-section-draft-indicator-inner {
+.ttfmake-section .ttfmake-section-indicator-inner {
 	padding: 3px 10px;
 	font-weight: 600;
-	background-color: #d54e21;
 	border-radius: 25px;
 	color: #fff;
+}
+.ttfmake-section .ttfmake-section-indicator--draft .ttfmake-section-indicator-inner {
+	background-color: #d54e21;
+}
+.ttfmake-section .ttfmake-section-indicator--master .ttfmake-section-indicator-inner {
+	background-color: #0073aa;
+}
+.ttfmp-section-master .ttfmake-section-indicator--master {
+	display: inline-block;
 }
 .ttfmake-section h4 {
 	margin: 20px 0 10px;
