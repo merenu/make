@@ -750,18 +750,19 @@
 
 		setValue: function( value ) {
 			var $placeholder = $( '.ttfmake-media-uploader-placeholder', this.$el );
-			var url = this.overlay.model.get( 'background-image-url' );
 
 			if ( value ) {
-				$placeholder.css( 'background-image', 'url(' + url + ')' );
-				$placeholder.parent().addClass( 'ttfmake-has-image-set' );
+				var url = this.overlay.model.get( 'background-image-url' )
+					|| this.overlay.changeset.get( 'background-image-url' );
 				this.model.set( 'background-image', value );
 				this.model.set( 'background-image-url', url );
+				$placeholder.css( 'background-image', 'url(' + url + ')' );
+				$placeholder.parent().addClass( 'ttfmake-has-image-set' );
 			} else {
-				$placeholder.css( 'background-image', '' );
-				$placeholder.parent().removeClass( 'ttfmake-has-image-set' );
 				this.model.set( 'background-image', '' );
 				this.model.set( 'background-image-url', '' );
+				$placeholder.css( 'background-image', '' );
+				$placeholder.parent().removeClass( 'ttfmake-has-image-set' );
 			}
 		},
 	} );
