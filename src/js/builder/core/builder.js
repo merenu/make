@@ -196,6 +196,15 @@
 
 		afterRender: function() {
 			this.listenTo( this.model, 'change:title', this.updateTitle );
+			this.listenTo( this.model, 'change:draft', this.onDraftChange );
+		},
+
+		onDraftChange: function() {
+			if (this.model.get('draft') === 1) {
+				this.$el.find('.ttfmake-section-badge--draft').addClass('show');
+			} else {
+				this.$el.find('.ttfmake-section-badge--draft').removeClass('show');
+			}
 		},
 
 		onToggleSectionClick: function ( e ) {

@@ -266,6 +266,9 @@
 	position: relative;
 	margin-left: 10px;
 }
+.ttfmake-section .ttfmake-section-badge.show {
+	display: inline-block;
+}
 .ttfmake-section .ttfmake-section-badge-inner {
 	padding: 3px 10px;
 	font-weight: 600;
