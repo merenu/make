@@ -432,6 +432,10 @@ class MAKE_Builder_Sections_Gallery_Definition {
 			$clean_data['background-image'] = '';
 		}
 
+		if ( isset( $data['background-image-url'] ) && '' !== $data['background-image-url'] ) {
+			$clean_data['background-image-url'] = $data['background-image-url'];
+		}
+
 		if ( isset( $data['title'] ) ) {
 			$clean_data['title'] = $clean_data['label'] = apply_filters( 'title_save_pre', $data['title'] );
 		}

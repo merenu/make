@@ -441,6 +441,10 @@ class MAKE_Builder_Sections_Columns_Definition {
 			$clean_data['background-image'] = '';
 		}
 
+		if ( isset( $data['background-image-url'] ) && '' !== $data['background-image-url'] ) {
+			$clean_data['background-image-url'] = $data['background-image-url'];
+		}
+
 		if ( isset( $data['background-position'] ) ) {
 			$clean_data['background-position'] = Make()->section()->sanitize_section_choice( $data['background-position'], 'background-position', $data['section-type'] );
 		}

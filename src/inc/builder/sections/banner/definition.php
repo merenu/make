@@ -485,6 +485,10 @@ class MAKE_Builder_Sections_Banner_Definition {
 			$clean_data['background-image'] = '';
 		}
 
+		if ( isset( $data['background-image-url'] ) && '' !== $data['background-image-url'] ) {
+			$clean_data['background-image-url'] = $data['background-image-url'];
+		}
+
 		if ( isset( $data['darken'] ) && (int) $data['darken'] == 1 ) {
 			$clean_data['darken'] = 1;
 		} else {
