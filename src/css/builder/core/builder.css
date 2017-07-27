@@ -275,12 +275,6 @@
 	border-radius: 25px;
 	color: #fff;
 }
-.ttfmake-section .ttfmake-section-badge--draft .ttfmake-section-badge-inner {
-	background-color: #d54e21;
-}
-.ttfmake-section .ttfmake-section-badge--master .ttfmake-section-badge-inner {
-	background-color: #0073aa;
-}
 .ttfmake-section h4 {
 	margin: 20px 0 10px;
 	font-size: 13px;

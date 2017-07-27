@@ -61,13 +61,14 @@ ksort( $links );
 		<h3{{ (data.get('title')) ? ' class=has-title' : '' }}>
 			<span class="ttfmake-section-header-title">{{ data.get('title') }}</span><em><?php echo ( esc_html( $ttfmake_section_data['label'] ) ); ?></em>
 
-			<span class="ttfmake-section-badge ttfmake-section-badge--draft{{ (parseInt(data.get('draft'), 10) === 1) ? ' show' : '' }}">
-				<span class="ttfmake-section-badge-inner"><?php echo __( 'Draft', 'make' ); ?></span>
-			</span>
-
-			<span class="ttfmake-section-badge ttfmake-section-badge--master{{ (parseInt(data.get('master'), 10) === 1) ? ' show' : '' }}">
-				<span class="ttfmake-section-badge-inner"><?php echo __( 'Master', 'make' ); ?></span>
-			</span>
+			<?php
+			/**
+			 * Display custom badges.
+			 *
+			 * @since 1.8.11.
+			 */
+			do_action( 'make_section_header_badges' );
+			?>
 		</h3>
 		<div class="ttf-make-section-header-button-wrapper">
 			<?php foreach ( $links as $link ) : ?>
