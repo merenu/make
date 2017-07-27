@@ -200,6 +200,7 @@
 		},
 
 		onDraftChange: function() {
+			// show / hide draft badge
 			if (this.model.get('draft') === 1) {
 				this.$el.find('.ttfmake-section-badge--draft').addClass('show');
 			} else {
